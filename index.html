@@ -1,12 +1,242 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>Document</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Name | Portfolio</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    line-height: 1.6;
+    background: #f4f4f4;
+}
+
+/* Navigation */
+nav {
+    background: #111;
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav h1 {
+    font-size: 1.5rem;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+}
+
+nav ul li {
+    margin-left: 20px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+nav ul li a:hover {
+    color: #00adb5;
+}
+
+/* Hero Section */
+.hero {
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(to right, #00adb5, #393e46);
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+.hero h2 {
+    font-size: 3rem;
+}
+
+.hero p {
+    margin: 20px 0;
+}
+
+.hero button {
+    padding: 10px 20px;
+    border: none;
+    background: #111;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.hero button:hover {
+    background: #222;
+}
+
+/* About Section */
+section {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.about {
+    background: white;
+}
+
+/* Projects */
+.projects {
+    background: #eeeeee;
+}
+
+.project-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.project-card {
+    background: white;
+    padding: 20px;
+    width: 280px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+.project-card:hover {
+    transform: translateY(-10px);
+}
+
+/* Contact */
+.contact {
+    background: white;
+}
+
+input, textarea {
+    width: 80%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button.submit-btn {
+    background: #00adb5;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button.submit-btn:hover {
+    background: #019ca3;
+}
+
+/* Footer */
+footer {
+    background: #111;
+    color: white;
+    text-align: center;
+    padding: 15px;
+}
+
+/* Responsive */
+@media(max-width: 768px) {
+    .hero h2 {
+        font-size: 2rem;
+    }
+
+    nav ul {
+        flex-direction: column;
+    }
+
+    nav ul li {
+        margin: 10px 0;
+    }
+}
+</style>
+
 </head>
 <body>
-    <h1>tuleb varsti</h1>
+
+<nav>
+    <h1>Portfolio</h1>
+    <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+</nav>
+
+<div class="hero">
+    <div>
+        <h2>Hello, I'm miz</h2>
+        <p>Web Developer | Designer | Freelancer</p>
+        <button onclick="document.getElementById('contact').scrollIntoView();">
+            Hire Me
+        </button>
+    </div>
+</div>
+
+<section id="about" class="about">
+    <h2>About Me</h2>
+    <p>
+        I am a passionate developer who loves building beautiful and functional websites.
+        I specialize in front-end development and responsive design.
+    </p>
+</section>
+
+<section id="projects" class="projects">
+    <h2>My Projects</h2>
+    <div class="project-container">
+        <div class="project-card">
+            <h3>Project 1</h3>
+            <p>FoodApp project</p>
+            <a href="https://url-shortener.me/ELA9" target="_blank">View My Figma Work</a>
+        </div>
+
+        <div class="project-card">
+            <h3>Project 2</h3>
+            <p>FoodTablet project</p>
+            <a href="https://url-shortener.me/ELA0" target="_blank">View My Figma Work</a>
+        </div>
+
+        <div class="project-card">
+            <h3>Project 3</h3>
+            <p>Dribble</p>
+            <a href="https://shorturl.at/wUAdH" target="_blank">View My Figma Work</a>
+        </div>
+    </div>
+</section>
+
+<section id="contact" class="contact">
+    <h2>Contact Me</h2>
+    <form>
+        <input type="text" placeholder="your name" required><br>
+        <input type="email" placeholder="your email" required><br>
+        <textarea rows="5" placeholder="Your Message" required></textarea><br>
+        <button type="submit" class="submit-btn">Send Message</button>
+    </form>
+</section>
+
+<footer>
+    <p>© 2026 Your Name | All Rights Reserved</p>
+</footer>
+
 </body>
 </html>
+    <link rel="stylesheet" href="styles.css">
