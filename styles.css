@@ -1,11 +1,21 @@
-html{
-    background-color: aqua;
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Exo+2:wght@400;600;800&family=Orbitron:wght@700;900&display=swap');
+
+:root{
+    --accent: #00adb5;
+    --muted: #eeeeee;
+    --bg: #f4f4f4;
+    --dark: #111;
+    --gothic-bg1: #07070a;
+    --gothic-bg2: #1a0f1f;
+    --neon1: #ff6b6b;
+    --neon2: #6a82fb;
+    --neon3: #00ffc3;
 }
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
+    font-family: 'Exo 2', 'Orbitron', 'Audiowide', sans-serif;
 }
 
 body {
@@ -24,7 +34,10 @@ nav {
 }
 
 nav h1 {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
+    font-family: 'Audiowide', 'Orbitron', 'Exo 2', sans-serif;
+    font-weight: 900;
+    letter-spacing: 2px;
 }
 
 nav ul {
@@ -52,18 +65,30 @@ nav ul li a:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(to right, #00adb5, #393e46);
+    background: url('street.gif') center/cover no-repeat, linear-gradient(45deg, #00adb5, #ff6b6b, #6a82fb, #00adb5);
+    background-size: cover, 300% 300%;
     color: white;
     text-align: center;
     padding: 20px;
 }
 
+
+
 .hero h2 {
-    font-size: 3rem;
+    font-size: 3.2rem;
+    font-family: 'Orbitron', 'Exo 2', 'Audiowide', sans-serif;
+    font-weight: 900;
+    letter-spacing: 3px;
+    text-transform: uppercase;
 }
 
 .hero p {
     margin: 20px 0;
+    font-family: 'Exo 2', 'Orbitron', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.95);
 }
 
 .hero button {
@@ -73,6 +98,9 @@ nav ul li a:hover {
     color: white;
     cursor: pointer;
     border-radius: 5px;
+    font-family: 'Exo 2', 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 1rem;
 }
 
 .hero button:hover {
@@ -91,41 +119,71 @@ section {
 
 /* Projects */
 .projects {
-    background: #eeeeee;
+    background: url('japan.gif') center/cover no-repeat, linear-gradient(115deg, #06060a, #1a0716, #0f1320, #1a0f1f);
+    background-size: cover, 400% 400%;
+    color: #e8eeeff0;
+    padding: 80px 20px;
 }
 
 .project-container {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
     margin-top: 30px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.project-card {
+.project-card{
     background: white;
     padding: 20px;
-    width: 280px;
     border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    transition: 0.3s;
+    box-shadow: 0 8px 18px rgba(24,24,24,0.08);
+    transition: transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .28s ease;
+    transform: translateY(0);
+    opacity: 0;
+    will-change: transform, opacity;
+    animation: fadeUp .6s ease forwards;
 }
 
 .project-card:hover {
-    transform: translateY(-10px);
+    transform: translateY(-10px) scale(1.01);
+    box-shadow: 0 18px 40px rgba(24,24,24,0.12);
+}
+
+.project-card p {
+    color: black;
+    font-family: 'Courier New', monospace;
 }
 
 /* Contact */
 .contact {
-    background: white;
+    background: linear-gradient(135deg, rgb(255, 0, 127), rgb(0, 255, 200), rgb(100, 150, 255));
+    background-size: 400% 400%;
+    animation: gradientBG 12s ease infinite;
+    color: black;
+    padding: 80px 20px;
+}
+
+.contact h2 {
+    color: black;
+    font-family: 'Exo 2', 'Courier New', monospace;
+    font-weight: 900;
+    font-size: 2.2rem;
+    letter-spacing: 2px;
 }
 
 input, textarea {
     width: 80%;
     padding: 10px;
     margin: 10px 0;
-    border: 1px solid #ccc;
+    border: 1px solid #333;
     border-radius: 5px;
+    background: rgba(255, 255, 255, 0.9);
+    color: black;
+    font-family: 'Exo 2', 'Courier New', monospace;
+    font-weight: bold;
 }
 
 button.submit-btn {
@@ -134,7 +192,11 @@ button.submit-btn {
     border: none;
     padding: 10px 20px;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 6px;
+    font-family: 'Exo 2', 'Courier New', monospace;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 1px;
 }
 
 button.submit-btn:hover {
@@ -146,7 +208,9 @@ footer {
     background: #111;
     color: white;
     text-align: center;
-    padding: 15px;
+    padding: 16px;
+    font-family: 'Exo 2', 'Courier New', monospace;
+    font-weight: 700;
 }
 
 /* Responsive */
@@ -162,4 +226,244 @@ footer {
     nav ul li {
         margin: 10px 0;
     }
+}
+
+/* Filters */
+.filters{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    margin-top:20px;
+}
+.filter-btn{
+    border:1px solid rgba(0,0,0,0.08);
+    background:white;
+    padding:8px 12px;
+    border-radius:6px;
+    cursor:pointer;
+    transition:all .18s ease;
+    font-family: 'Exo 2', 'Courier New', monospace;
+    font-weight: 700;
+}
+.filter-btn.active{
+    background:var(--accent);
+    color:white;
+    transform:translateY(-2px);
+}
+.filter-btn:hover{ transform:translateY(-2px); }
+
+/* Project card image and interactions */
+.project-card{ overflow:hidden; }
+.project-card img{
+    width:100%;
+    height:auto;
+    display:block;
+    border-radius:8px;
+    margin-bottom:12px;
+    transition: transform .35s ease, filter .35s ease;
+}
+.project-card:hover img{ transform:scale(1.03); filter:brightness(.98); }
+.project-card.hide{ opacity:0; transform:scale(.98); transition: all .3s ease; }
+
+/* Staggered entry animation for project cards */
+.project-container .project-card:nth-child(1){ animation-delay: .04s }
+.project-container .project-card:nth-child(2){ animation-delay: .10s }
+.project-container .project-card:nth-child(3){ animation-delay: .16s }
+.project-container .project-card:nth-child(4){ animation-delay: .22s }
+.project-container .project-card:nth-child(5){ animation-delay: .28s }
+.project-container .project-card:nth-child(6){ animation-delay: .34s }
+
+/* Button and nav micro-interactions */
+.hero button, .filter-btn, .submit-btn{
+    transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease;
+}
+.hero button:active, .filter-btn:active, .submit-btn:active{ transform: translateY(1px) scale(.997); }
+.filter-btn:focus{ outline: 2px solid rgba(0,173,181,.18); outline-offset: 3px; }
+
+/* Animated gradient keyframes */
+@keyframes gradientBG{
+    0%{ background-position:0% 50% }
+    50%{ background-position:100% 50% }
+    100%{ background-position:0% 50% }
+}
+
+@keyframes fadeUp{
+    from{ opacity:0; transform: translateY(12px); }
+    to{ opacity:1; transform: translateY(0); }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+    .hero{ animation: none; }
+    .project-card{ animation: none; transition: none; opacity:1; }
+}
+
+/* About section animated gradient and button micro-interactions */
+.about{
+    color: #fff;
+    background: linear-gradient(135deg, rgba(106,130,251,0.95), rgba(255,107,107,0.92));
+    background-size: 200% 200%;
+    animation: gradientBG 10s ease infinite;
+    padding: 80px 20px;
+}
+.about h2 {
+    color:#fff;
+    font-family: 'Orbitron', 'Audiowide', 'Exo 2', sans-serif;
+    font-weight: 900;
+    font-size: 2.4rem;
+    letter-spacing: 2px;
+}
+.about p{ max-width:900px; margin: 12px auto; color: rgba(255,255,255,0.95); font-family: 'Exo 2', 'Courier New', monospace; font-size: 1.45rem; font-weight: 700; letter-spacing: 1px; text-transform: none; }
+
+/* Button hover + subtle ripple/sheen */
+.hero button, .filter-btn, .submit-btn{
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+.hero button::after, .filter-btn::after, .submit-btn::after{
+    content: '';
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 0; height: 0;
+    background: radial-gradient(circle, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 60%);
+    transform: translate(-50%,-50%) scale(0.1);
+    opacity: 0;
+    transition: width .35s ease, height .35s ease, opacity .35s ease, transform .35s ease;
+    border-radius: 50%;
+}
+.hero button:hover::after, .filter-btn:hover::after, .submit-btn:hover::after{
+    width: 260%; height: 260%; opacity: 1; transform: translate(-50%,-50%) scale(1);
+}
+.hero button:hover, .filter-btn:hover, .submit-btn:hover{
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+
+/* Disable heavy hover effects for reduced-motion users */
+@media (prefers-reduced-motion: reduce){
+    .hero button::after, .filter-btn::after, .submit-btn::after{ display:none }
+    .hero button:hover, .filter-btn:hover, .submit-btn:hover{ transform:none; box-shadow:none }
+}
+
+/* Lightbox */
+.lightbox{
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,0.6);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s ease;
+    z-index:9999;
+}
+.lightbox.open{ opacity:1; pointer-events:auto; }
+.lightbox-content{
+    max-width:90%;
+    max-height:85%;
+    background:transparent;
+    position:relative;
+}
+.lightbox-content img{ width:100%; height:auto; border-radius:6px; display:block; }
+.lightbox-close{
+    position:absolute;
+    top:-12px;
+    right:-12px;
+    background:#ffd900;
+    border-radius:50%;
+    width:36px;height:36px;
+    border:none; cursor:pointer; font-size:20px;
+}
+.lightbox-caption{ color:#ffd900; text-align:center; margin-top:8px; }
+.lightbox-caption{ color:#ffd900; text-align:center; margin-top:8px; font-family: 'Exo 2', 'Courier New', monospace; }
+
+/* Small responsive grid improvements */
+.external{ color:var(--accent); text-decoration:none; }
+.external{ color:var(--accent); text-decoration:none; font-family:'Exo 2', 'Courier New', monospace; font-weight: bold; }
+.external:hover{ text-decoration:underline; }
+
+.projects{
+    background: url(solitude.gif) center/cover no-repeat, linear-gradient(115deg, #06060a, #1a0716, #0f1320, #1a0f1f);
+    background-size: cover, 400% 400%;
+    color: #03d6fcf0;
+    padding: 80px 20px;
+}
+
+.projects h2{
+    font-weight:900;
+    font-size:2.4rem;
+    font-family: 'Exo 2', 'Courier New', monospace;
+    letter-spacing: 2px;
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    color: white;
+    text-shadow: 0 6px 18px rgba(106,130,251,0.06);
+    animation: textShift 6s linear infinite;
+}
+
+.project-card{
+    background: white;
+    border: 1px solid #ddd;
+    color: black;
+}
+
+.project-card h3{
+    color: black;
+    margin-bottom:6px;
+    font-family: 'Exo 2', 'Courier New', monospace;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.external{
+    background: linear-gradient(90deg, var(--neon3));
+    -webkit-background-clip: text;
+    color:black;
+    transition: text-shadow .18s ease, transform .18s ease, opacity .18s ease;
+    opacity: 0.25;
+}
+.external:hover{ text-shadow: 0 6px 20px rgba(0,255,195,0.12); transform: translateY(-2px); opacity: 0.8; }
+
+
+/* Subtle neon glow on hover for headings */
+.projects h2:hover, .project-card h3:hover{
+    animation: neonPulse 1.6s ease-in-out 0s 1;
+}
+
+
+@keyframes gothicShift{
+    0%{ background-position: 0% 50%; }
+    50%{ background-position: 100% 50%; }
+    100%{ background-position: 0% 50%; }
+}
+
+@keyframes textShift{
+    0%{ background-position: 0% 50%; }
+    50%{ background-position: 100% 50%; }
+    100%{ background-position: 0% 50%; }
+}
+
+/* Logo / nav title gradient */
+nav h1{
+    background: linear-gradient(90deg, var(--neon1));
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: textShift 7s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce){
+    .projects h2:hover, .project-card h3:hover{ animation: none }
+    .projects{ animation: none }
+    nav h1, .projects h2{ animation: none }
+}
+.contact {
+    background-image: url(japan.gif); /* replace with your GIF path */
+    background-size: cover;       /* make it cover the whole section */
+    background-repeat: no-repeat; /* prevent tiling */
+    background-position: center;  /* center the GIF */
+    color: white;                 /* optional: adjust text color for visibility */
+    padding: 80px 20px;
 }
