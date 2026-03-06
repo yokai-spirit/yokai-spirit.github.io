@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browser Paint App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>Browser Paint App</h1>
+
+    <div id="toolbar">
+        <label for="toolSelect">Tool:</label>
+        <select id="toolSelect">
+            <option value="brush">Brush</option>
+            <option value="pencil">Pencil</option>
+            <option value="spray">Spray</option>
+            <option value="eraser">Eraser</option>
+            <option value="fill">Fill Bucket</option>
+            <option value="rectangle">Rectangle</option>
+        </select>
+        <label for="brushSize">Size:</label>
+        <input type="range" id="brushSize" min="1" max="50" value="2">
+        <input type="color" id="colorPicker" value="#000000">
+        <button id="clearCanvas">Clear Canvas</button>
+        <button id="saveDrawing">Save Drawing</button>
+    </div>
+
+    <div id="canvasControls">
+        <label for="canvasWidth">Width:</label>
+        <input type="number" id="canvasWidth" value="600" min="100" max="2000">
+        <label for="canvasHeight">Height:</label>
+        <input type="number" id="canvasHeight" value="400" min="100" max="2000">
+        <button id="resizeCanvas">Resize Canvas</button>
+    </div>
+
+    <div id="canvasWrapper">
+        <canvas id="paintCanvas" width="600" height="400"></canvas>
+    </div>
+
+    <h2>Gallery</h2>
+    <button id="clearGallery">Clear Gallery</button>
+    <div id="gallery"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
