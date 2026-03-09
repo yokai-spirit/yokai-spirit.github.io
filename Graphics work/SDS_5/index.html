@@ -1,0 +1,95 @@
+<!--Scroll-Driven Scaling: The farther down the page you scroll,
+ the larger (or smaller) design elements become.-->
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            font-family: sans-serif;
+            height: 500vh; /* Extra height to allow for scrolling */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 10vh;
+        }
+
+        .huge-button {
+            /* Big and Bold */
+            width: 80%;
+            height: 40vh;
+            margin-bottom: 50vh; /* Space between them to see the scroll effect */
+            border: none;
+            border-radius: 40px;
+            font-size: 5rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            
+            /* Sticky keeps them in view while scrolling */
+            position: sticky;
+            top: 10vh;
+            
+            /* Smooth transitions */
+            transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        /* Distinct colors for each button */
+        .btn-1 { background: #ff5f6d; }
+        .btn-2 { background: #ffc371; }
+        .btn-3 { background: #4facfe; }
+        .btn-4 { background: #00f2fe; }
+        .btn-5 { background: #43e97b; }
+        .btn-6 { background: #fa709a; }
+        .btn-7 { background: #667eea; }
+        .btn-8 { background: #f093fb; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <button class="huge-button btn-1">一</button>
+    <button class="huge-button btn-2">二</button>
+    <button class="huge-button btn-3">三</button>
+    <button class="huge-button btn-4">四</button>
+    <button class="huge-button btn-5">五</button>
+    <button class="huge-button btn-6">六</button>
+    <button class="huge-button btn-7">七</button>
+    <button class="huge-button btn-8">八</button>
+</div>
+
+<script>
+    window.addEventListener('scroll', () => {
+        const buttons = document.querySelectorAll('.huge-button');
+        
+        buttons.forEach((btn) => {
+            const rect = btn.getBoundingClientRect();
+            // As the button stays at the top (10vh), we calculate how much 
+            // the user has scrolled past its original container position
+            const distanceFromTop = rect.top;
+            
+            if (distanceFromTop <= window.innerHeight * 0.11) {
+                // Calculate shrink factor (0.5 is minimum size)
+                const shrink = Math.max(0.5, 1 - (Math.abs(rect.top - 50) / 1000));
+                btn.style.transform = `scale(${shrink})`;
+                btn.style.opacity = shrink;
+            } else {
+                btn.style.transform = `scale(1)`;
+                btn.style.opacity = 1;
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

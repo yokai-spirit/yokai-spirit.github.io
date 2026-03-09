@@ -1,0 +1,31 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* Prevents scrollbars if stickers go off-edge */
+    font-family: sans-serif;
+}
+
+#sticker-zone {
+    width: 100vw;
+    height: 100vh;
+    background-color: #f0f0f0;
+    cursor: crosshair;
+    position: relative;
+}
+
+h1 {
+    text-align: center;
+    color: #ccc;
+    user-select: none;
+    pointer-events: none; /* Allows clicks to pass through text to the div */
+}
+
+.sticker {
+    position: absolute;
+    width: 150px; /* Adjust size as needed */
+    height: auto;
+    pointer-events: none; /* Optional: lets you click "through" old stickers */
+    transform-origin: center;
+    user-select: none;
+}

@@ -1,0 +1,96 @@
+<!--Dragging Physics: Any object on the screen can be grabbed and dragged,
+ but it moves with a slight delay (inertia effect), as if it were heavy.-->
+ <!DOCTYPE html>
+<html>
+<head>
+<style>
+  body {
+    background-color: #000000;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden; /* Prevents scrollbars during dragging */
+    font-family: sans-serif;
+  }
+
+  .rgb-button {
+    position: absolute; /* Required for manual positioning */
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: grab;
+    background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff);
+    background-size: 400% 400%;
+    animation: rainbow-flow 5s ease infinite;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    user-select: none; /* Prevents text highlighting while dragging */
+    touch-action: none; /* Better performance on mobile */
+  }
+
+  .rgb-button:active {
+    cursor: grabbing;
+  }
+
+  @keyframes rainbow-flow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+</style>
+</head>
+<body>
+
+  <button class="rgb-button" id="heavyButton">Hold to drag</button>
+
+<script>
+  const button = document.getElementById('heavyButton');
+  
+  // Physics Variables
+  let isDragging = false;
+  let mouseX = window.innerWidth / 2;
+  let mouseY = window.innerHeight / 2;
+  let buttonX = window.innerWidth / 2;
+  let buttonY = window.innerHeight / 2;
+
+  // The "Weight" factor (0.01 = Very Heavy, 0.2 = Light/Snappy)
+  const inertia = 0.08; 
+
+  // Track Mouse/Touch position
+  const updatePointer = (e) => {
+    if (isDragging) {
+      mouseX = e.clientX || e.touches[0].clientX;
+      mouseY = e.clientY || e.touches[0].clientY;
+    }
+  };
+
+  button.addEventListener('mousedown', () => isDragging = true);
+  button.addEventListener('touchstart', () => isDragging = true);
+  window.addEventListener('mouseup', () => isDragging = false);
+  window.addEventListener('touchend', () => isDragging = false);
+  window.addEventListener('mousemove', updatePointer);
+  window.addEventListener('touchmove', updatePointer);
+
+  // The Physics Engine (Animation Loop)
+  function animate() {
+    // Linear Interpolation formula: Current + (Target - Current) * Factor
+    // This creates the "delayed" chase effect
+    buttonX += (mouseX - buttonX) * inertia;
+    buttonY += (mouseY - buttonY) * inertia;
+
+    // Apply styles (transform is smoother than top/left)
+    // Subtracting 50% translates it to stay centered under the cursor
+    button.style.transform = `translate(${buttonX - button.offsetWidth / 2}px, ${buttonY - button.offsetHeight / 2}px)`;
+
+    requestAnimationFrame(animate);
+  }
+
+  // Start the loop
+  animate();
+</script>
+
+</body>
+</html>

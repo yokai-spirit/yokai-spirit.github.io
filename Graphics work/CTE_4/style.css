@@ -1,0 +1,10 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #0a0a0a; /* Deeper black */
+  cursor: crosshair;
+}
+
+canvas {
+  display: block;
+}

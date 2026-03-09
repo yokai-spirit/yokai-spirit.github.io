@@ -1,0 +1,20 @@
+body{
+  font-family: monospace;
+  background:#111;
+  color:#00ff9c;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+#typing::after{
+  content: "|";
+  animation: blink 1s infinite;
+  margin-left:4px;
+}
+
+@keyframes blink{
+  0%,50%,100%{opacity:1;}
+  25%,75%{opacity:0;}
+}

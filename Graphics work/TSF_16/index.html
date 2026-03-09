@@ -1,0 +1,72 @@
+<!--Text Shadow Follow: All headings’ shadows are always directed opposite to the cursor.
+ Logic: “where the mouse is, there is the sun.”-->
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text Shadow Follow Cursor</title>
+<style>
+  /* Black background for the whole page */
+  body {
+    margin: 0;
+    height: 100vh;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    cursor: none; /* hide cursor for effect */
+    font-family: 'Press Start 2P', cursive; /* pixelated font */
+  }
+
+  /* Pixelated yellow headings */
+  h1, h2, h3 {
+    color: #e6ff00; /* toxic yellow */
+    font-family: 'Press Start 2P', monospace;
+    font-weight: bold;
+    margin: 20px;
+    text-align: center;
+    transition: text-shadow 0.05s ease;
+  }
+</style>
+</head>
+<body>
+
+<h1>Artifical light</h1>
+<h2>move cursor</h2>
+<h3>shadows</h3>
+
+<script>
+  const headings = document.querySelectorAll('h1, h2, h3');
+
+  document.addEventListener('mousemove', (e) => {
+    const { clientX: mouseX, clientY: mouseY } = e;
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+
+    headings.forEach(h => {
+      // distance from cursor to heading center
+      const rect = h.getBoundingClientRect();
+      const hCenterX = rect.left + rect.width / 2;
+      const hCenterY = rect.top + rect.height / 2;
+
+      // vector from heading to cursor
+      const dx = mouseX - hCenterX;
+      const dy = mouseY - hCenterY;
+
+      // invert shadow to make it "opposite of light"
+      const shadowX = -dx / 10;
+      const shadowY = -dy / 10;
+
+      // apply shadow
+      h.style.textShadow = `${shadowX}px ${shadowY}px 5px #E67E22`;
+    });
+  });
+</script>
+
+<!-- Import pixelated font from Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+</body>
+</html>

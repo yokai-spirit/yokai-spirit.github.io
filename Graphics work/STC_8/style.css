@@ -1,0 +1,35 @@
+body {
+  font-family: sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+  overflow: hidden; /* Prevents scrollbars when buttons fall */
+}
+
+#container {
+  display: flex;
+  gap: 10px;
+}
+
+button.falling-btn {
+  padding: 15px 25px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  background: white;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: transform 0.8s cubic-bezier(0.55, 0.055, 0.675, 0.19), opacity 0.8s ease;
+}
+
+.fall {
+  /* Moves them off-screen and adds a random-looking rotation */
+  transform: translateY(120vh) rotate(500deg);
+  opacity: 0;
+  pointer-events: none; /* Stops user from clicking them mid-air */
+}
+body {
+  transition: background-color 0.8s ease; /* Smoothly morphs the color */
+  background-color: rgb(240, 240, 240); /* Initial color */
+}

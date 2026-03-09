@@ -1,0 +1,161 @@
+<!--Custom Cursor Shape: Replace the standard mouse cursor with
+ a custom graphic object that rotates while moving.-->
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Custom Cursor</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background-color: #111;
+            cursor: none; /* Hide the default cursor */
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* --- UI Elements --- */
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: none; /* Keep cursor hidden over buttons */
+            background: #333;
+            color: white;
+            border: 2px solid #555;
+            border-radius: 5px;
+            z-index: 100;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #555;
+        }
+
+        /* --- The Main Cursor --- */
+        #custom-cursor {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%); /* Center on mouse */
+            transition: width 0.2s, height 0.2s;
+        }
+
+        /* Continuous rotation animation */
+        .rotating {
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* --- Cursor Shapes --- */
+        .shape-circle { border-radius: 50%; background: #fff; }
+        .shape-square { background: #fff; }
+        .shape-triangle {
+            width: 0 !important; height: 0 !important;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 30px solid #fff;
+            background: transparent !important;
+        }
+
+        /* --- Particle Trails --- */
+        .trail {
+            position: absolute;
+            pointer-events: none;
+            opacity: 1;
+            transition: transform 0.8s ease-out, opacity 0.8s ease-out;
+        }
+        .trail.circle { border-radius: 50%; }
+        .trail.triangle {
+            width: 0; height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 12px solid yellow;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="custom-cursor" class="rotating shape-circle"></div>
+
+    <button onclick="changeCursor('shape-circle')">Circle</button>
+    <button onclick="changeCursor('shape-square')">Square</button>
+    <button onclick="changeCursor('shape-triangle')">Triangle</button>
+
+    <script>
+        const cursor = document.getElementById('custom-cursor');
+        const maxTrails = 50;
+        const trails = [];
+        const shapes = ['circle', 'square', 'triangle'];
+        const colors = ['#ff3', '#3ff', '#f3f', '#0f0', '#0ff', '#f00'];
+
+        // 1. Move the Main Cursor
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            
+            // Create a trail particle
+            createTrail(e.clientX, e.clientY);
+        });
+
+        // 2. Button Functionality
+        function changeCursor(newShape) {
+            // Remove old shape classes
+            cursor.classList.remove('shape-circle', 'shape-square', 'shape-triangle');
+            // Add new shape
+            cursor.classList.add(newShape);
+        }
+
+        // 3. Trail Logic (Integrated from your code)
+        function createTrail(x, y) {
+            const trail = document.createElement('div');
+            const shape = shapes[Math.floor(Math.random() * shapes.length)];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+
+            trail.classList.add('trail', shape);
+
+            if (shape === 'triangle') {
+                trail.style.borderBottomColor = color;
+            } else {
+                trail.style.backgroundColor = color;
+                trail.style.width = '10px';
+                trail.style.height = '10px';
+            }
+
+            trail.style.left = x + 'px';
+            trail.style.top = y + 'px';
+            document.body.appendChild(trail);
+            trails.push(trail);
+
+            const offsetX = (Math.random() - 0.5) * 60;
+            const offsetY = (Math.random() - 0.5) * 60;
+
+            // Trigger the "explosion" effect
+            setTimeout(() => {
+                trail.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(0)`;
+                trail.style.opacity = 0;
+            }, 10);
+
+            // Cleanup
+            setTimeout(() => {
+                trail.remove();
+            }, 800);
+
+            if (trails.length > maxTrails) {
+                const oldTrail = trails.shift();
+                if(oldTrail) oldTrail.remove();
+            }
+        }
+    </script>
+</body>
+</html>

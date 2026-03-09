@@ -1,0 +1,165 @@
+<!--Z-Index Shuffle: When clicking any element,
+ it jumps to the foreground, covering the other elements. Explore layer order.-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Button Backgrounds</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transition: background-color 0.5s;
+  }
+
+  .btn {
+    padding: 20px 40px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    border: 2px solid #333;
+    background-color: lightgray;
+    font-family: Arial, sans-serif;
+    transition: transform 0.2s, background-color 0.2s, font-family 0.2s;
+    z-index: 1000;
+    position: relative;
+    margin: 0 10px;
+  }
+
+  .btn:hover { transform: scale(1.1); }
+  .btn:active { transform: scale(0.9); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+
+  canvas { 
+    position: fixed; 
+    top: 0; left: 0; 
+    pointer-events: none; 
+    z-index: 0; 
+  }
+</style>
+</head>
+<body>
+
+<button class="btn" data-style="gothic">Gothic</button>
+<button class="btn" data-style="gaming">Gaming</button>
+<button class="btn" data-style="futuristic">Futuristic</button>
+<button class="btn" data-style="fun">Fun</button>
+
+<canvas id="bgCanvas"></canvas>
+
+<script>
+// canvas setup
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let animationId;
+let currentStyle = '';
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// -------------------- Gothic flying dots --------------------
+let dots = [];
+
+function createDots(num = 100) {
+  dots = [];
+  for (let i=0; i<num; i++) {
+    dots.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      radius: Math.random() * 2 + 1,
+      dx: (Math.random() - 0.5) * 0.5,
+      dy: (Math.random() - 0.5) * 0.5,
+      glow: Math.random() * 0.8 + 0.2
+    });
+  }
+}
+
+function animateDots() {
+  if(currentStyle !== 'gothic') return;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  dots.forEach(dot => {
+    dot.x += dot.dx;
+    dot.y += dot.dy;
+    if(dot.x < 0) dot.x = canvas.width;
+    if(dot.x > canvas.width) dot.x = 0;
+    if(dot.y < 0) dot.y = canvas.height;
+    if(dot.y > canvas.height) dot.y = 0;
+
+    ctx.beginPath();
+    ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(255,255,255,${dot.glow})`;
+    ctx.shadowColor = 'white';
+    ctx.shadowBlur = 5;
+    ctx.fill();
+  });
+  animationId = requestAnimationFrame(animateDots);
+}
+
+// -------------------- Gaming checkerboard --------------------
+let squareSize = 60;
+let offset = 0;
+
+function animateCheckerboard() {
+  if(currentStyle !== 'gaming') return;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(let y=0; y<canvas.height; y+=squareSize){
+    for(let x=0; x<canvas.width; x+=squareSize){
+      ctx.fillStyle = ((Math.floor((x+offset)/squareSize) + Math.floor(y/squareSize)) % 2 === 0) ? 'cyan' : 'purple';
+      ctx.fillRect(x, y, squareSize, squareSize);
+    }
+  }
+  offset += 0.5; // animate sliding
+  animationId = requestAnimationFrame(animateCheckerboard);
+}
+
+// stop any animation
+function stopAnimation() {
+  cancelAnimationFrame(animationId);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+
+// -------------------- Button logic --------------------
+const buttons = document.querySelectorAll('.btn');
+const defaultColor = 'lightgray';
+const defaultFont = 'Arial, sans-serif';
+
+buttons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const style = btn.dataset.style;
+    currentStyle = style;
+
+    // reset buttons
+    buttons.forEach(b=>{
+      b.style.backgroundColor = defaultColor;
+      b.style.fontFamily = defaultFont;
+    });
+
+    // personal color & font
+    let color, font;
+    if(style==='gothic'){ color='lightcoral'; font="'Old English Text MT', serif"; }
+    else if(style==='gaming'){ color='lightblue'; font="'Press Start 2P', cursive"; }
+    else if(style==='futuristic'){ color='lightgreen'; font="'Orbitron', sans-serif"; }
+    else{ color='lightgoldenrodyellow'; font="'Comic Sans MS', cursive"; }
+
+    btn.style.backgroundColor = color;
+    btn.style.fontFamily = font;
+
+    // background effects
+    stopAnimation();
+    if(style==='gothic'){ document.body.style.backgroundColor = '#111'; createDots(150); animateDots(); }
+    else if(style==='gaming'){ document.body.style.backgroundColor = '#000'; animateCheckerboard(); }
+    else if(style==='futuristic'){ document.body.style.backgroundColor = '#2dff14'; }
+    else{ document.body.style.backgroundColor = '#FFFF00'; }
+  });
+});
+</script>
+</body>
+</html>

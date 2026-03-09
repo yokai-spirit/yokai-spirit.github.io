@@ -1,0 +1,24 @@
+body, html {
+  margin: 0;
+  height: 100%;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+}
+
+.magnetic-button {
+  padding: 20px 40px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 12px;
+  /* Smooth return when the mouse leaves */
+  transition: transform 0.2s ease-out; 
+}

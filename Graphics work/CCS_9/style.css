@@ -1,0 +1,31 @@
+body {
+  margin: 0;
+  height: 100vh;
+  background-color: #111;
+  cursor: none;
+  overflow: hidden;
+}
+
+.trail {
+  position: absolute;
+  pointer-events: none;
+  opacity: 1;
+  transition: transform 0.5s linear, opacity 0.5s linear;
+}
+
+.trail.circle {
+  border-radius: 50%;
+}
+
+.trail.square {
+  border-radius: 0;
+}
+
+.trail.triangle {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 12px solid yellow; /* Will be overwritten by JS color */
+  background: transparent;
+}

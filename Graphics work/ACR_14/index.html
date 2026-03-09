@@ -1,0 +1,87 @@
+<!--Auto-Chaos Rotation: All page elements rotate slowly and smoothly around their axes at different speeds,
+ creating a lively, “floating” interface.-->
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+    body {
+        background: #111;
+        height: 100vh;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden; /* Prevents scrollbars if buttons fly off-screen */
+    }
+
+    .chaos-container {
+        display: flex;
+        gap: 30px;
+    }
+
+    .chaos-btn {
+        padding: 15px 30px;
+        font-size: 18px;
+        font-weight: bold;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        color: white;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        /* Transitions make the color and shadow changes feel fluid */
+        transition: background-color 0.5s, box-shadow 0.5s, transform 0.2s;
+    }
+
+    .chaos-btn:active {
+        transform: scale(0.9); /* Squish effect when clicked */
+    }
+
+    @keyframes chaosRotate {
+        0% { transform: rotate(0deg) translate(0, 0); }
+        25% { transform: rotate(90deg) translate(10px, -10px); }
+        50% { transform: rotate(180deg) translate(-5px, 20px); }
+        75% { transform: rotate(270deg) translate(-15px, -5px); }
+        100% { transform: rotate(360deg) translate(0, 0); }
+    }
+</style>
+</head>
+<body>
+
+<div class="chaos-container">
+    <button class="chaos-btn">Alpha</button>
+    <button class="chaos-btn">Beta</button>
+    <button class="chaos-btn">Gamma</button>
+    <button class="chaos-btn">Delta</button>
+</div>
+
+<script>
+const buttons = document.querySelectorAll(".chaos-btn");
+
+function randomize(btn) {
+    // 1. Random Animation Stats
+    const duration = Math.random() * 8 + 2; // 2s to 10s (faster is more chaotic)
+    const direction = Math.random() > 0.5 ? "normal" : "reverse";
+    
+    // 2. Random Colors
+    const r = Math.floor(Math.random() * 200 + 55); // Keeping them a bit brighter
+    const g = Math.floor(Math.random() * 200 + 55);
+    const b = Math.floor(Math.random() * 200 + 55);
+    const randomRGB = `rgb(${r}, ${g}, ${b})`;
+
+    // 3. Apply Styles
+    btn.style.animation = `chaosRotate ${duration}s linear infinite`;
+    btn.style.animationDirection = direction;
+    btn.style.backgroundColor = randomRGB;
+    
+    // Add a glowing shadow that matches the button color
+    btn.style.boxShadow = `0 0 20px ${randomRGB}`;
+}
+
+buttons.forEach(btn => {
+    randomize(btn);
+    btn.addEventListener("click", () => randomize(btn));
+});
+</script>
+
+</body>
+</html>

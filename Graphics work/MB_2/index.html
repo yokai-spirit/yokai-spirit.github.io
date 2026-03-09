@@ -1,0 +1,61 @@
+<!--Magnetic Buttons When the cursor approaches a button, it is drawn toward it by a few pixels. -->
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #f0f0f0;
+  }
+
+  .magnetic-btn {
+    padding: 15px 30px;
+    font-size: 18px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease-out; /* Smooths the movement */
+  }
+</style>
+</head>
+<body>
+
+<button class="magnetic-btn" id="btn">Click Me!</button>
+
+<script>
+  const btn = document.getElementById('btn');
+  const threshold = 150; // How close the mouse needs to be (in pixels)
+  const strength = 0.3;  // How "strong" the pull is (0.1 to 0.5 recommended)
+
+  document.addEventListener('mousemove', (e) => {
+    const rect = btn.getBoundingClientRect();
+    
+    // Find the center of the button
+    const btnX = rect.left + rect.width / 2;
+    const btnY = rect.top + rect.height / 2;
+
+    // Distance between mouse and button center
+    const deltaX = e.clientX - btnX;
+    const deltaY = e.clientY - btnY;
+    const distance = Math.sqrt(deltaX**2 + deltaY**2);
+
+    if (distance < threshold) {
+      // Calculate movement (shifting closer)
+      const moveX = deltaX * strength;
+      const moveY = deltaY * strength;
+      
+      btn.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    } else {
+      // Reset position if mouse is far away
+      btn.style.transform = `translate(0px, 0px)`;
+    }
+  });
+</script>
+
+</body>
+</html>

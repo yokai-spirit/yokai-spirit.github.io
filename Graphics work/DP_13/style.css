@@ -1,0 +1,41 @@
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000; /* Black background */
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#drag-element {
+  width: 150px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: white;
+  border-radius: 12px;
+  user-select: none;
+  position: absolute;
+  
+  /* RGB Gradient Look */
+  background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+  background-size: 400%;
+  animation: bg-animation 20s linear infinite;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+#drag-element:active {
+  cursor: grabbing;
+}
+
+@keyframes bg-animation {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 400% 50%; }
+}

@@ -1,0 +1,40 @@
+body{
+    background:#111;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.chaos-container{
+    display:flex;
+    gap:30px;
+}
+
+.chaos-btn{
+    padding:15px 30px;
+    font-size:18px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+
+    /* smooth color change */
+    transition: background-color 0.4s;
+}
+
+/* rotation animation */
+@keyframes chaosRotate {
+
+    0%{
+        transform: rotate(0deg) translateY(0px);
+    }
+
+    50%{
+        transform: rotate(180deg) translateY(-10px);
+    }
+
+    100%{
+        transform: rotate(360deg) translateY(0px);
+    }
+
+}

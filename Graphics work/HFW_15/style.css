@@ -1,0 +1,91 @@
+body {
+  background: #050505; /* Deeper black for better contrast */
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  overflow: hidden;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  gap: 60px; /* Increased gap for larger buttons */
+}
+
+img {
+  width: 600px; /* Made the image slightly larger to match the vibe */
+  border: 4px solid #222;
+  border-radius: 15px;
+  transition: all 0.5s ease-in-out;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.1);
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* Individual Toxic Colors with Glowing Shadows */
+button {
+  all: unset; /* Resets default browser button styles */
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  border-radius: 50px; /* Makes them rounded/capsule shaped */
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s ease;
+  width: 120px; /* Keeps them uniform */
+}
+/* B&W - Toxic Silver/White */
+button:nth-child(1) { 
+  background: linear-gradient(45deg, #e0e0e0, #888); 
+  color: black; 
+  box-shadow: 0 0 15px #ffffff;
+}
+
+/* Neon - Radioactive Green */
+button:nth-child(2) { 
+  background: linear-gradient(45deg, #39ff14, #00ff00); 
+  color: black; 
+  box-shadow: 0 0 20px #39ff14;
+}
+
+/* Invert - Acid Cyan */
+button:nth-child(3) { 
+  background: linear-gradient(45deg, #00ffff, #008080); 
+  color: black; 
+  box-shadow: 0 0 20px #00ffff;
+}
+
+/* Blur - Biohazard Yellow */
+button:nth-child(4) { 
+  background: linear-gradient(45deg, #fff200, #ffcc00); 
+  color: black; 
+  box-shadow: 0 0 20px #fff200;
+}
+
+/* Reset - Hot Lava/Pink */
+button:nth-child(5) { 
+  background: linear-gradient(45deg, #ff0055, #ff0000); 
+  color: white; 
+  box-shadow: 0 0 20px #ff0055;
+}
+
+/* Hover Effects */
+button:hover {
+  transform: scale(1.1) translateX(10px); /* Pops out and moves slightly */
+  filter: brightness(1.2);
+  box-shadow: 0 0 40px currentColor; /* Glow intensifies on hover */
+}
+
+button:active {
+  transform: scale(0.95);
+}
+

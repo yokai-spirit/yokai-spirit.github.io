@@ -1,0 +1,109 @@
+/* Center game in browser */
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    font-family: sans-serif;
+}
+
+#game-container {
+    display: flex;
+    justify-content: center;
+}
+
+#grid {
+    display: grid;
+    grid-template-columns: repeat(20, 25px);
+    grid-template-rows: repeat(20, 25px);
+    gap: 1px;
+    border: 5px solid blue;
+}
+
+.cell {
+    width: 25px;
+    height: 25px;
+}
+
+.wall {
+    background-color: blue;
+}
+
+.dot {
+    background: radial-gradient(circle, white 4px, transparent 5px);
+}
+
+.pacman {
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.ghost {
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.pacman {
+  transition: background-image 0.1s ease-in-out;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #111; /* Slightly softer black */
+    font-family: 'Courier New', Courier, monospace;
+    color: white;
+}
+
+#game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#ui-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    height: 30px;
+}
+
+.stat {
+    font-size: 20px;
+    font-weight: bold;
+    color: yellow;
+}
+
+#game-message {
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+#grid {
+    display: grid;
+    grid-template-columns: repeat(20, 25px);
+    grid-template-rows: repeat(20, 25px);
+    gap: 1px;
+    border: 5px solid blue;
+    background-color: black;
+}
+
+.cell { width: 25px; height: 25px; }
+.wall { background-color: blue; }
+.dot { background: radial-gradient(circle, #ffb8ae 3px, transparent 4px); }
+
+.pacman, .ghost {
+    background-size: contain;
+    background-repeat: no-repeat;
+    transition: background-image 0.1s ease-in-out;
+}

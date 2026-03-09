@@ -1,0 +1,16 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 50px;
+  background: linear-gradient(to right, #ffecd2, #fcb69f);
+}
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+p {
+  font-size: 1.2rem;
+}
