@@ -1,0 +1,107 @@
+:root {
+	--bg-0: #05070e;
+	--bg-1: #0a1021;
+	--panel: rgba(8, 14, 34, 0.75);
+	--line: #00f0ff;
+	--line-alt: #ff2e9c;
+	--text: #d8f3ff;
+	--glow: 0 0 12px rgba(0, 240, 255, 0.7);
+}
+
+body.theme-crt {
+	--bg-0: #091107;
+	--bg-1: #030904;
+	--panel: rgba(7, 20, 10, 0.8);
+	--line: #64ff8f;
+	--line-alt: #d4ff6e;
+	--text: #c2ffd2;
+	--glow: 0 0 12px rgba(100, 255, 143, 0.65);
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	min-height: 100vh;
+	font-family: "Orbitron", sans-serif;
+	color: var(--text);
+	background:
+		radial-gradient(1200px circle at 10% 10%, rgba(255, 46, 156, 0.12), transparent 55%),
+		radial-gradient(900px circle at 90% 90%, rgba(0, 240, 255, 0.12), transparent 50%),
+		linear-gradient(145deg, var(--bg-0), var(--bg-1));
+	display: grid;
+	place-items: center;
+}
+
+.app-shell {
+	width: min(94vw, 1200px);
+	display: grid;
+	gap: 1.1rem;
+}
+
+.title {
+	margin: 0;
+	font-size: clamp(1.1rem, 2.8vw, 2rem);
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	text-align: center;
+	text-shadow: 0 0 16px rgba(0, 240, 255, 0.6);
+}
+
+.controls {
+	display: flex;
+	justify-content: center;
+	gap: 0.9rem;
+	flex-wrap: wrap;
+}
+
+.neon-btn {
+	appearance: none;
+	border: 2px solid var(--line);
+	border-radius: 10px;
+	background: rgba(8, 14, 34, 0.6);
+	color: var(--text);
+	font: inherit;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	padding: 0.75rem 1.2rem;
+	cursor: pointer;
+	box-shadow: var(--glow), inset 0 0 8px rgba(0, 240, 255, 0.2);
+	transition: transform 120ms ease, box-shadow 150ms ease, border-color 150ms ease;
+}
+
+.neon-btn:hover {
+	transform: translateY(-1px);
+	border-color: var(--line-alt);
+	box-shadow:
+		0 0 16px rgba(255, 46, 156, 0.75),
+		inset 0 0 10px rgba(255, 46, 156, 0.3);
+}
+
+.canvas-zone {
+	width: 100%;
+	height: min(70vh, 760px);
+	border: 2px solid var(--line);
+	border-radius: 16px;
+	background: var(--panel);
+	box-shadow: 0 0 24px rgba(0, 240, 255, 0.35);
+	overflow: hidden;
+}
+
+#displayCanvas {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+@media (max-width: 700px) {
+	.canvas-zone {
+		height: min(64vh, 520px);
+	}
+
+	.neon-btn {
+		width: 100%;
+	}
+}

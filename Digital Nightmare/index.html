@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Digital Nightmare</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<main class="app-shell">
+		<h1 class="title">Digital Nightmare Vision Deck</h1>
+
+		<section class="controls" aria-label="Media controls">
+			<button id="cameraBtn" class="neon-btn" type="button">Turn on Camera</button>
+			<button id="photoBtn" class="neon-btn" type="button">Load Photo</button>
+			<button id="themeBtn" class="neon-btn" type="button">Theme: Neon</button>
+			<button id="mirrorBtn" class="neon-btn" type="button">Mirror: Off</button>
+			<button id="freezeBtn" class="neon-btn" type="button">Freeze: Off</button>
+			<button id="asciiBtn" class="neon-btn" type="button">ASCII: Off</button>
+			<button id="saveBtn" class="neon-btn" type="button">Chaos Save</button>
+			<input id="photoInput" type="file" accept="image/*" hidden>
+		</section>
+
+		<section class="canvas-zone" aria-label="Display canvas">
+			<canvas id="displayCanvas" aria-label="Camera or photo output"></canvas>
+		</section>
+	</main>
+
+	<video id="cameraFeed" autoplay playsinline muted hidden></video>
+	<script src="script.js"></script>
+</body>
+</html>
