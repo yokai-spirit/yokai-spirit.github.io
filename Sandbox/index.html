@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Brush Physics - Particle Sprinkle</title>
+	<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+	<header class="hud">
+		<h1>Brush Physics</h1>
+		<p>Hold and drag to sprinkle particles. In Brush mode: attract by default, hold Shift to repel.</p>
+		<div class="material-controls" role="group" aria-label="Material type">
+			<button class="material-btn active" data-material="sand" type="button">Sand</button>
+			<button class="material-btn" data-material="water" type="button">Water</button>
+			<button class="material-btn" data-material="gas" type="button">Gas</button>
+			<button class="material-btn" data-material="gel" type="button">Gel</button>
+			<button class="material-btn" data-material="brush" type="button">Pull-Brush</button>
+		</div>
+		<div class="action-controls">
+			<button id="organizeBtn" class="material-btn action-btn" type="button">Logo</button>
+			<button id="windBtn" class="material-btn action-btn" type="button">Wind</button>
+			<button id="heatBtn" class="material-btn action-btn" type="button">Heat Map</button>
+			<button id="freezeBtn" class="material-btn action-btn" type="button">Freeze</button>
+			<button id="screenshotBtn" class="material-btn action-btn" type="button">Screenshot</button>
+			<button id="portalsBtn" class="material-btn action-btn" type="button">Portals</button>
+		</div>
+	</header>
+
+	<canvas id="paintCanvas" aria-label="Particle brush simulation"></canvas>
+
+	<section id="bootOverlay" aria-hidden="true">
+		<h2>APERTURE SCIENCE TERMINAL</h2>
+		<pre id="bootText"></pre>
+	</section>
+
+	<pre id="apertureAscii" hidden>
+                .,-:;//;:=,
+            . :H@@@MM@M#H/.,+%;,
+         ,/X+ +M@@M@MM%=,-%HMMM@X/,
+       -+@MM; $M@@MH+-,;XMMMM@MMMM@+-
+      ;@M@@M- XM@X;. -+XXXXXHHH@M@M#@/.
+    ,%MM@@MH ,@%=             .---=-=:=,.
+    =@#@@@MX.,                -%HX$$%%%:;
+   =-./@M@M$                  .;@MMMM@MM:
+   X@/ -$MM/                    .+MM@@@M$
+  ,@M@H: :@:                    . =X#@@@@-
+  ,@@@MMX, .                    /H- ;@M@M=
+  .H@@@@M@+,                    %MM+..%#$.
+   /MMMM@MMH/.                  XM@MH; =;
+    /%+%$XHH@$=              , .H@@@@MX,
+     .=--------.           -%H.,@@@@@MX,
+     .%MM@@@HHHXX$$$%+- .:$MMX =M@@MM%.
+       =XMMM@MM@MM#H;,-+HMM@M+ /MMMX=
+         =%@M@M#@$-.=$@MM@@@M; %M%=
+           ,:+$+-,/H#MMMMMMM@= =,
+                 =++%%%%+/:-.
+	</pre>
+
+	<script src="script.js"></script>
+</body>
+</html>

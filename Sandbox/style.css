@@ -1,0 +1,202 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+:root {
+	--bg-top: #f7fbff;
+	--bg-bottom: #dbeafe;
+	--text: #f3f7ff;
+	--panel: rgba(12, 16, 26, 0.82);
+	--panel-border: rgba(255, 255, 255, 0.24);
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	margin: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+body {
+	font-family: "Press Start 2P", "Consolas", "Courier New", monospace;
+	color: var(--text);
+	background:
+		linear-gradient(180deg, rgba(11, 14, 20, 0.58), rgba(8, 12, 18, 0.62)),
+		url("aperture.jpg") center / cover no-repeat fixed;
+	position: relative;
+}
+
+body::before {
+	content: "";
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: 4;
+	background:
+		repeating-linear-gradient(
+			to bottom,
+			rgba(255, 255, 255, 0.03) 0px,
+			rgba(255, 255, 255, 0.03) 1px,
+			rgba(0, 0, 0, 0.12) 2px,
+			rgba(0, 0, 0, 0.12) 3px
+		),
+		radial-gradient(circle at 50% -20%, rgba(93, 253, 203, 0.12), rgba(0, 0, 0, 0));
+	opacity: 0.45;
+	mix-blend-mode: screen;
+}
+
+.hud {
+	position: fixed;
+	top: 12px;
+	left: 12px;
+	z-index: 2;
+	background:
+		linear-gradient(var(--panel), var(--panel)) padding-box,
+		linear-gradient(120deg, #ff3158, #5dfdcb, #5aa8ff, #ffce59, #ff3158) border-box;
+	border: 1px solid transparent;
+	border-radius: 10px;
+	padding: 0.7rem 0.9rem;
+	backdrop-filter: blur(6px);
+	box-shadow:
+		0 8px 22px rgba(0, 0, 0, 0.42),
+		0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+	animation: rgbFrame 7s linear infinite;
+}
+
+.hud h1 {
+	margin: 0;
+	font-size: 0.8rem;
+	line-height: 1.3;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	text-shadow: 0 0 10px rgba(90, 168, 255, 0.45);
+}
+
+.hud p {
+	margin: 0.3rem 0 0;
+	font-size: 0.55rem;
+	line-height: 1.5;
+	letter-spacing: 0.3px;
+	color: rgba(233, 241, 255, 0.92);
+}
+
+.material-controls {
+	display: flex;
+	gap: 0.45rem;
+	margin-top: 0.65rem;
+}
+
+.action-controls {
+	display: flex;
+	margin-top: 0.55rem;
+	gap: 0.45rem;
+}
+
+.material-btn {
+	border: 1px solid transparent;
+	background:
+		linear-gradient(rgba(16, 22, 36, 0.95), rgba(12, 17, 28, 0.95)) padding-box,
+		linear-gradient(120deg, rgba(255, 49, 88, 0.85), rgba(93, 253, 203, 0.85), rgba(90, 168, 255, 0.85)) border-box;
+	color: #eef4ff;
+	padding: 0.45rem 0.7rem;
+	border-radius: 999px;
+	font-size: 0.52rem;
+	font-family: "Press Start 2P", "Consolas", "Courier New", monospace;
+	letter-spacing: 0.4px;
+	cursor: pointer;
+	text-transform: uppercase;
+	box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+	transition: transform 140ms ease, box-shadow 180ms ease, filter 180ms ease;
+}
+
+.material-btn:hover {
+	transform: translateY(-1px);
+	box-shadow:
+		0 0 8px rgba(255, 49, 88, 0.35),
+		0 0 10px rgba(90, 168, 255, 0.28);
+	filter: saturate(1.14);
+}
+
+.material-btn.active {
+	background:
+		linear-gradient(rgba(26, 33, 52, 0.98), rgba(14, 23, 40, 0.98)) padding-box,
+		linear-gradient(120deg, #ff3158, #5dfdcb, #5aa8ff, #ffce59) border-box;
+	color: #ffffff;
+	box-shadow:
+		0 0 9px rgba(255, 49, 88, 0.48),
+		0 0 11px rgba(90, 168, 255, 0.36);
+}
+
+.action-btn.active {
+	background:
+		linear-gradient(rgba(18, 45, 68, 0.98), rgba(12, 35, 58, 0.98)) padding-box,
+		linear-gradient(120deg, #5dfdcb, #5aa8ff, #ff3158) border-box;
+	color: #ffffff;
+}
+
+#paintCanvas {
+	display: block;
+	width: 100vw;
+	height: 100vh;
+	cursor: crosshair;
+}
+
+#bootOverlay {
+	position: fixed;
+	inset: 0;
+	z-index: 6;
+	background: rgba(3, 8, 14, 0.92);
+	display: grid;
+	align-content: center;
+	justify-items: start;
+	padding: min(9vw, 88px);
+	row-gap: 12px;
+	color: #f4f8ff;
+	text-shadow: 0 0 12px rgba(93, 253, 203, 0.38);
+	transition: opacity 500ms ease;
+}
+
+#bootOverlay.hidden {
+	opacity: 0;
+	pointer-events: none;
+}
+
+#bootOverlay h2 {
+	margin: 0;
+	font-size: clamp(0.6rem, 1.5vw, 0.9rem);
+	letter-spacing: 1px;
+	color: #e9f2ff;
+	animation: bootFlicker 1400ms steps(2, end) infinite;
+}
+
+#bootText {
+	margin: 0;
+	font-family: "Press Start 2P", "Consolas", "Courier New", monospace;
+	font-size: clamp(0.48rem, 1.1vw, 0.62rem);
+	line-height: 1.7;
+	white-space: pre-wrap;
+	max-width: min(88vw, 1100px);
+	color: rgba(226, 241, 255, 0.96);
+	min-height: 12em;
+}
+
+@keyframes rgbFrame {
+	0% {
+		filter: hue-rotate(0deg);
+	}
+	100% {
+		filter: hue-rotate(360deg);
+	}
+}
+
+@keyframes bootFlicker {
+	0%, 100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.78;
+	}
+}
