@@ -1,0 +1,129 @@
+:root {
+  --sky-top: #8fd0ff;
+  --sky-bottom: #dcf3ff;
+  --panel: #111827;
+  --panel-text: #f9f6d8;
+  --accent: #f59e0b;
+  --brick: #b45309;
+  --ground: #14532d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Press Start 2P", cursive;
+  color: var(--panel-text);
+  background:
+    radial-gradient(circle at 20% 20%, #fff9d7 0 8%, transparent 8.5%),
+    radial-gradient(circle at 70% 30%, #fff3b0 0 6%, transparent 6.5%),
+    linear-gradient(180deg, var(--sky-top), var(--sky-bottom));
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.game-shell {
+  width: min(1100px, 100%);
+  display: grid;
+  gap: 12px;
+}
+
+.hud-bar {
+  background: var(--panel);
+  border: 4px solid #0b1020;
+  border-radius: 8px;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.stage-wrap {
+  position: relative;
+  border: 6px solid #0b1020;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #7ec4f5;
+}
+
+#game {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  gap: 16px;
+  padding: 24px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.55));
+}
+
+.overlay h1 {
+  margin: 0;
+  font-size: clamp(18px, 3.8vw, 36px);
+  color: #fff8cc;
+}
+
+.overlay p {
+  margin: 0;
+  font-size: clamp(10px, 2vw, 14px);
+  line-height: 1.7;
+}
+
+#startBtn {
+  justify-self: center;
+  font-family: inherit;
+  font-size: 12px;
+  border: 0;
+  padding: 12px 18px;
+  background: var(--accent);
+  color: #111;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 5px 0 #b45309;
+}
+
+#startBtn:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 #b45309;
+}
+
+.touch-controls {
+  display: none;
+  gap: 10px;
+}
+
+.control-btn {
+  font-family: inherit;
+  font-size: 11px;
+  border: 0;
+  border-radius: 8px;
+  padding: 12px 8px;
+  background: #111827;
+  color: #fff6d1;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .hud-bar {
+    font-size: 10px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .touch-controls {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

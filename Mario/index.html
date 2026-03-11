@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meta Mario</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="game-shell">
+    <header class="hud-bar">
+      <div>PLAYER <span id="score">000000</span></div>
+      <div>COINS <span id="coins">00</span></div>
+      <div>TIME <span id="time">400</span></div>
+      <div>LIVES <span id="lives">3</span></div>
+    </header>
+
+    <section class="stage-wrap">
+      <canvas id="game" width="960" height="540" aria-label="Platform game stage"></canvas>
+      <div id="overlay" class="overlay">
+        <h1>PLUMBER QUEST</h1>
+        <p>Arrow keys or A/D to move, Space/W/Up to jump</p>
+        <p>Collect coins, avoid enemies, touch the flag!</p>
+        <button id="startBtn">Start Game</button>
+      </div>
+    </section>
+
+    <section class="touch-controls" aria-label="Touch controls">
+      <button id="leftBtn" class="control-btn">LEFT</button>
+      <button id="jumpBtn" class="control-btn">JUMP</button>
+      <button id="rightBtn" class="control-btn">RIGHT</button>
+    </section>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
