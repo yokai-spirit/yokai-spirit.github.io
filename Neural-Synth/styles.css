@@ -1,0 +1,90 @@
+:root {
+  --bg: #070811;
+  --panel: rgba(20, 24, 40, 0.85);
+  --panel-border: rgba(120, 140, 255, 0.35);
+  --text: #e9ecff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: radial-gradient(circle at 20% 20%, #141b35 0%, var(--bg) 45%, #03040b 100%);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#drawingCanvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  cursor: crosshair;
+}
+
+#controlsBar {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+#controlsBar > button {
+  padding: 10px 16px;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  color: var(--text);
+  background: var(--panel);
+  backdrop-filter: blur(6px);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+}
+
+#controlsBar > button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(161, 177, 255, 0.6);
+  background: rgba(35, 42, 71, 0.9);
+}
+
+#controlsBar > button:active {
+  transform: translateY(0);
+}
+
+#colorPicker {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#palette {
+  position: fixed;
+  top: 68px;
+  left: 16px;
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  background: rgba(20, 24, 40, 0.72);
+  backdrop-filter: blur(6px);
+}
+
+.swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.28);
+}

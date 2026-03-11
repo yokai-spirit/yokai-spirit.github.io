@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neon Sketch</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="controlsBar">
+    <button id="colorButton" type="button">Choose Color</button>
+    <button id="resetColorsButton" type="button">Reset Colors</button>
+    <button id="magnetModeButton" type="button">Magnet Mode: Off</button>
+    <button id="symmetryModeButton" type="button">Symmetry: Off</button>
+    <button id="recordLoopButton" type="button">Record Loop</button>
+    <button id="shakeClearButton" type="button">clear</button>
+    <input id="colorPicker" type="color" value="#00f0ff" aria-label="Pick brush color">
+  </div>
+  <div id="palette" aria-label="Color queue"></div>
+  <canvas id="drawingCanvas" aria-label="Drawing canvas"></canvas>
+
+  <script src="app.js"></script>
+</body>
+</html>
