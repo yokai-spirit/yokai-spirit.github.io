@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixel Puzzle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-glow"></div>
+
+  <header class="header">
+    <h1 id="title">Pixel Puzzle</h1>
+  </header>
+
+  <main class="main-layout">
+    <section class="controls-and-field">
+      <aside class="controls-panel">
+        <label for="uploadInput" class="btn btn-primary">Upload photo</label>
+        <input id="uploadInput" type="file" accept="image/*" />
+        <button id="cameraBtn" class="btn btn-secondary" type="button">Camera pic</button>
+        <label class="difficulty-label" for="difficultySelect">Difficulty</label>
+        <select id="difficultySelect" class="difficulty-select" aria-label="Difficulty">
+          <option value="3">3x3 - Easy</option>
+          <option value="5" selected>5x5 - Normal</option>
+          <option value="10">10x10 - Medium</option>
+          <option value="12">12x12 - Hard</option>
+        </select>
+        <section class="score-widget" aria-label="Timer and highscore">
+          <div class="score-head">
+            <span class="score-title">Score</span>
+            <div class="score-head-actions">
+              <button id="saveScoreJsonBtn" class="score-reset-btn" type="button" aria-label="Save leaderboard JSON file">Save JSON</button>
+              <button id="resetScoreBtn" class="score-reset-btn" type="button" aria-label="Reset best score history">Reset</button>
+            </div>
+          </div>
+          <div class="score-row">
+            <span class="score-label">Time</span>
+            <strong id="timerValue" class="score-value">00:00.0</strong>
+          </div>
+          <div class="score-row">
+            <span class="score-label">Best Time</span>
+            <strong id="bestTimeValue" class="score-value">--:--.-</strong>
+          </div>
+          <ul id="scoreHistory" class="score-history" aria-label="Top 3 best results history"></ul>
+        </section>
+        <section class="music-widget" aria-label="Playlist">
+          <h3>Playlist</h3>
+          <audio id="musicPlayer" class="music-player" controls preload="metadata"></audio>
+          <ul id="musicPlaylist" class="music-playlist" aria-label="Soundtrack playlist"></ul>
+        </section>
+        <button id="shapeBtn" class="btn btn-secondary" type="button">Shape: Squares</button>
+        <button id="hintBtn" class="btn btn-secondary" type="button">View</button>
+        <button id="cutBtn" class="btn btn-secondary">Cut into puzzles</button>
+      </aside>
+
+      <section class="field-wrapper">
+        <div class="field-head">
+          <h2>Assembly field</h2>
+          <button id="explodeBtn" class="btn btn-secondary explosion-btn" type="button">Explosion</button>
+        </div>
+        <div id="assemblyField" class="assembly-grid" aria-label="Assembly field"></div>
+      </section>
+    </section>
+
+    <section class="original-wrapper">
+      <h2>Original image</h2>
+      <canvas id="originalCanvas" width="400" height="400" aria-label="Original image"></canvas>
+    </section>
+  </main>
+
+  <section class="storage-wrapper">
+    <h2>Storage</h2>
+    <div id="storage" class="storage" aria-label="Storage"></div>
+  </section>
+
+  <section id="cameraModal" class="camera-modal" aria-hidden="true">
+    <div class="camera-card" role="dialog" aria-modal="true" aria-label="Camera capture">
+      <h2>Camera Capture</h2>
+      <video id="cameraPreview" autoplay playsinline></video>
+      <div class="camera-actions">
+        <button id="captureBtn" class="btn btn-primary" type="button">Capture</button>
+        <button id="closeCameraBtn" class="btn btn-secondary" type="button">Close</button>
+      </div>
+    </div>
+  </section>
+
+  <canvas id="fireworksCanvas" class="fireworks-canvas" aria-hidden="true"></canvas>
+
+  <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
