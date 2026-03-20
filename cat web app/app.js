@@ -111,11 +111,11 @@ const CAT_FORTUNES = [
 ];
 
 const HOVER_CAT_IMAGES = [
-  "/cats/adopt.png",
-  "/cats/arrogant.png",
-  "/cats/neko.png",
-  "/cats/stretch.png",
-  "/cats/yawn.png"
+  "cats/adopt.png",
+  "cats/arrogant.png",
+  "cats/neko.png",
+  "cats/stretch.png",
+  "cats/yawn.png"
 ];
 
 const CAT_TITLES = [
@@ -313,7 +313,7 @@ function buildCard(record) {
   image.dataset.originalSrc = record.cat.url;
   image.dataset.originalAlt = image.alt;
 
-  image.addEventListener("mouseenter", () => {
+  const activateHoverSwap = () => {
     const hoverSrc = pickHoverCatImage(record.seed + Math.floor(Date.now() / 1000));
     if (!hoverSrc) {
       return;
@@ -323,21 +323,21 @@ function buildCard(record) {
     image.classList.add("is-hover-swap");
     image.src = hoverSrc;
     image.alt = `${record.name} hover image`;
-  });
+  };
 
-  image.addEventListener("mouseleave", () => {
+  const deactivateHoverSwap = () => {
     image.dataset.hoverActive = "0";
     image.classList.remove("is-hover-swap");
     image.src = image.dataset.originalSrc || record.cat.url;
     image.alt = image.dataset.originalAlt || (record.breed?.name ? `${record.breed.name} cat` : "Cat image");
-  });
+  };
+
+  card.addEventListener("mouseenter", activateHoverSwap);
+  card.addEventListener("mouseleave", deactivateHoverSwap);
 
   image.addEventListener("error", () => {
     if (image.dataset.hoverActive === "1") {
-      image.dataset.hoverActive = "0";
-      image.classList.remove("is-hover-swap");
-      image.src = image.dataset.originalSrc || record.cat.url;
-      image.alt = image.dataset.originalAlt || (record.breed?.name ? `${record.breed.name} cat` : "Cat image");
+      deactivateHoverSwap();
     }
   });
 
