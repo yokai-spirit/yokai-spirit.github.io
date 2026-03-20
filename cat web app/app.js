@@ -36,13 +36,14 @@ const pokerBank = document.getElementById("pokerBank");
 const pokerBet = document.getElementById("pokerBet");
 const pokerCatBetInfo = document.getElementById("pokerCatBetInfo");
 const pokerCatBetSelect = document.getElementById("pokerCatBetSelect");
-const pokerCatBetBtn = document.getElementById("pokerCatBetBtn");
 const pokerBetMinus = document.getElementById("pokerBetMinus");
 const pokerBetPlus = document.getElementById("pokerBetPlus");
 const pokerAllInBtn = document.getElementById("pokerAllInBtn");
+const pokerRiggedBtn = document.getElementById("pokerRiggedBtn");
 
 const CARD_LIMIT = 12;
 const POKER_START_BANKROLL = 100;
+const POKER_RIGGED_EDGE_CHANCE = 0.45;
 const CAT_BET_VALUES = {
   Common: 15,
   Epic: 35,
@@ -53,6 +54,7 @@ let currentCatRecords = [];
 let pokerState = null;
 let pokerBankroll = POKER_START_BANKROLL;
 let pokerCurrentBet = 10;
+let pokerRiggedMode = false;
 
 const ESTIMATED_ORIGINS = [
   "Mediterranean Coast",
@@ -532,6 +534,35 @@ function loadPokerBankroll() {
   pokerBankroll = Number.isFinite(parsed) && parsed >= 0 ? parsed : POKER_START_BANKROLL;
 }
 
+function saveRiggedMode() {
+  localStorage.setItem("cat-poker-rigged", pokerRiggedMode ? "1" : "0");
+}
+
+function loadRiggedMode() {
+  pokerRiggedMode = localStorage.getItem("cat-poker-rigged") === "1";
+}
+
+function refreshRiggedButtonUi() {
+  if (!pokerRiggedBtn) {
+    return;
+  }
+
+  pokerRiggedBtn.textContent = pokerRiggedMode ? "Rigged Game: ON" : "Rigged Game: OFF";
+  pokerRiggedBtn.classList.toggle("is-on", pokerRiggedMode);
+}
+
+function toggleRiggedMode() {
+  pokerRiggedMode = !pokerRiggedMode;
+  saveRiggedMode();
+  refreshRiggedButtonUi();
+
+  if (pokerStatus) {
+    pokerStatus.textContent = pokerRiggedMode
+      ? "Rigged mode enabled: dealer has a higher chance to steal close wins."
+      : "Rigged mode disabled: normal fair odds restored.";
+  }
+}
+
 function clampPokerBet(value) {
   if (pokerBankroll <= 0) {
     return 0;
@@ -719,6 +750,54 @@ function evaluateBestHand(cards) {
   return best;
 }
 
+function maybeRigDealerHand(playerEval, dealerEval) {
+  if (!pokerRiggedMode) {
+    return { dealerEval, rigApplied: false };
+  }
+
+  if (compareEvaluations(playerEval, dealerEval) <= 0) {
+    return { dealerEval, rigApplied: false };
+  }
+
+  if (Math.random() >= POKER_RIGGED_EDGE_CHANCE) {
+    return { dealerEval, rigApplied: false };
+  }
+
+  const remainingCards = Array.isArray(pokerState?.deck) ? [...pokerState.deck] : [];
+  if (remainingCards.length === 0 || !pokerState?.dealerHole || pokerState.dealerHole.length < 2) {
+    return { dealerEval, rigApplied: false };
+  }
+
+  const dealerBase = [...pokerState.dealerHole];
+  let bestEval = dealerEval;
+  let bestHole = dealerBase;
+  let improved = false;
+
+  for (let slot = 0; slot < 2; slot += 1) {
+    for (const candidate of remainingCards) {
+      const trialHole = [...dealerBase];
+      trialHole[slot] = candidate;
+      const trialEval = evaluateBestHand([...trialHole, ...pokerState.community]);
+      if (compareEvaluations(trialEval, bestEval) > 0) {
+        bestEval = trialEval;
+        bestHole = trialHole;
+        improved = true;
+      }
+    }
+  }
+
+  if (!improved) {
+    return { dealerEval, rigApplied: false };
+  }
+
+  if (compareEvaluations(playerEval, bestEval) <= 0) {
+    pokerState.dealerHole = bestHole;
+    return { dealerEval: bestEval, rigApplied: true };
+  }
+
+  return { dealerEval, rigApplied: false };
+}
+
 function renderHand(element, cards, { hide = false, slotCount = cards.length } = {}) {
   element.innerHTML = "";
 
@@ -744,9 +823,9 @@ function renderHand(element, cards, { hide = false, slotCount = cards.length } =
   }
 }
 
-function getDealerOpenBet(roundNumber) {
+function getDealerOpenBet(roundNumber, raisePressure = 0) {
   const multiplier = [0.9, 1.1, 1.35][roundNumber - 1] || 1;
-  const candidate = Math.max(5, Math.floor(pokerCurrentBet * multiplier));
+  const candidate = Math.max(5, Math.floor(pokerCurrentBet * multiplier) + raisePressure);
   return Math.min(candidate, pokerBankroll);
 }
 
@@ -776,6 +855,19 @@ function advanceCommunity(roundNumber) {
   }
 }
 
+function revealAllCommunityCards() {
+  while (pokerState.community.length < 5) {
+    pokerState.community.push(drawCard(pokerState.deck));
+  }
+}
+
+function triggerAllInShowdown() {
+  revealAllCommunityCards();
+  pokerState.phase = "finished";
+  pokerStatus.textContent = "All-in called. Revealing all cards for immediate showdown.";
+  showdown();
+}
+
 function finalizeRoundStatus(text) {
   pokerState.phase = "finished";
   pokerStatus.textContent = text;
@@ -802,9 +894,12 @@ function updateCatBetInfoText() {
 
 function showdown() {
   const playerEval = evaluateBestHand([...pokerState.playerHole, ...pokerState.community]);
-  const dealerEval = evaluateBestHand([...pokerState.dealerHole, ...pokerState.community]);
+  let dealerEval = evaluateBestHand([...pokerState.dealerHole, ...pokerState.community]);
+  const rigResult = maybeRigDealerHand(playerEval, dealerEval);
+  dealerEval = rigResult.dealerEval;
   const result = compareEvaluations(playerEval, dealerEval);
   const stake = pokerState.stake;
+  const rigNote = rigResult.rigApplied ? " House edge activated." : "";
 
   playerRank.textContent = `Your best hand: ${playerEval.label}`;
   dealerRank.textContent = `Dealer best hand: ${dealerEval.label}`;
@@ -812,21 +907,21 @@ function showdown() {
   if (result > 0) {
     pokerBankroll += stake * 2;
     finalizeRoundStatus(
-      `You win: ${playerEval.label} beats dealer's ${dealerEval.label}. Payout: +${stake} chips net.`
+      `You win: ${playerEval.label} beats dealer's ${dealerEval.label}. Payout: +${stake} chips net.${rigNote}`
     );
     return;
   }
 
   if (result < 0) {
     finalizeRoundStatus(
-      `Dealer wins: ${dealerEval.label} beats your ${playerEval.label}. You lost ${stake} chips.`
+      `Dealer wins: ${dealerEval.label} beats your ${playerEval.label}. You lost ${stake} chips.${rigNote}`
     );
     return;
   }
 
   pokerBankroll += stake;
   finalizeRoundStatus(
-    `Tie: both sides made ${playerEval.label}. Your full stake was returned.`
+    `Tie: both sides made ${playerEval.label}. Your full stake was returned.${rigNote}`
   );
 }
 
@@ -838,7 +933,7 @@ function moveToNextBettingRound() {
 
   pokerState.round += 1;
   advanceCommunity(pokerState.round);
-  pokerState.actionAmount = getDealerOpenBet(pokerState.round);
+  pokerState.actionAmount = getDealerOpenBet(pokerState.round, pokerState.raisePressure || 0);
   pokerState.phase = "await-action";
   playerRank.textContent = "";
   dealerRank.textContent = "Dealer hole cards remain hidden.";
@@ -878,17 +973,9 @@ function renderPoker() {
 
   const awaitingAction = pokerState.phase === "await-action";
   const actionAmount = pokerState.actionAmount || 0;
-  pokerCheckBtn.disabled = !(awaitingAction && actionAmount > 0 && pokerBankroll >= actionAmount);
+  pokerCheckBtn.disabled = !(awaitingAction && pokerBankroll >= actionAmount);
   pokerRaiseBtn.disabled = !(awaitingAction && pokerBankroll >= actionAmount + pokerCurrentBet);
   pokerFoldBtn.disabled = !awaitingAction;
-  if (pokerCatBetBtn) {
-    pokerCatBetBtn.disabled =
-      !awaitingAction ||
-      !pokerState ||
-      Boolean(pokerState.catBet) ||
-      !pokerCatBetSelect ||
-      !pokerCatBetSelect.value;
-  }
 }
 
 function startPokerRound() {
@@ -910,7 +997,8 @@ function startPokerRound() {
     phase: "await-action",
     round: 1,
     stake: pokerCurrentBet,
-    actionAmount: getDealerOpenBet(1),
+    actionAmount: getDealerOpenBet(1, 0),
+    raisePressure: 0,
     catBet: null
   };
 
@@ -918,6 +1006,11 @@ function startPokerRound() {
   playerRank.textContent = "Waiting for your action.";
   pokerStatus.textContent = `Dealer opens with ${pokerState.actionAmount} chips. Choose Check, Raise, or Fold.`;
   refreshPokerBankUi();
+  if (pokerBankroll === 0) {
+    triggerAllInShowdown();
+    return;
+  }
+
   renderPoker();
 }
 
@@ -948,6 +1041,7 @@ function pokerRaise() {
   const callAmount = pokerState.actionAmount || 0;
   const raiseAmount = pokerCurrentBet;
   const total = callAmount + raiseAmount;
+  const isAllInRaise = pokerBankroll === total;
 
   if (pokerBankroll < total) {
     pokerStatus.textContent = "Not enough chips to raise.";
@@ -957,6 +1051,11 @@ function pokerRaise() {
   pokerBankroll -= total;
   pokerState.stake += total;
   savePokerBankroll();
+
+  if (isAllInRaise) {
+    triggerAllInShowdown();
+    return;
+  }
 
   if (!dealerCallsRaise()) {
     playerRank.textContent = "Your hand: Raise pressure";
@@ -968,7 +1067,9 @@ function pokerRaise() {
     return;
   }
 
-  pokerStatus.textContent = `Dealer called your raise of ${raiseAmount}.`;
+  pokerState.raisePressure = (pokerState.raisePressure || 0) + raiseAmount;
+  pokerStatus.textContent =
+    `Dealer called your raise of ${raiseAmount}. Future rounds will have higher dealer opens.`;
   refreshPokerBankUi();
   moveToNextBettingRound();
 }
@@ -1022,8 +1123,47 @@ function addCatCardBet() {
   savePokerBankroll();
   refreshPokerBankUi();
   updateCatBetInfoText();
-  pokerStatus.textContent = `Cat card bet added: ${record.name} (${record.rarity.label}) for +${amount} chips.`;
+  pokerStatus.textContent =
+    `Cat card bet added: ${record.name} (${record.rarity.label}) +${amount} chips. Total stake now ${pokerState.stake}.`;
+
+  if (pokerBankroll === 0) {
+    triggerAllInShowdown();
+    return;
+  }
+
   renderPoker();
+}
+
+function onCatBetSelectionChange() {
+  const selectedId = pokerCatBetSelect?.value;
+  if (!selectedId) {
+    return;
+  }
+
+  const record = currentCatRecords.find((cat) => cat.id === selectedId);
+  if (!record) {
+    return;
+  }
+
+  const amount = getCatBetValue(record.rarity.label);
+
+  if (pokerState?.catBet && pokerState.catBet.id === selectedId) {
+    return;
+  }
+
+  if (pokerState && pokerState.phase === "await-action" && !pokerState.catBet) {
+    addCatCardBet();
+    return;
+  }
+
+  if (pokerCatBetInfo && (!pokerState || !pokerState.catBet)) {
+    pokerCatBetInfo.textContent = `${record.name} (${record.rarity.label}) +${amount} selected`;
+  }
+
+  if (pokerStatus) {
+    pokerStatus.textContent =
+      `Selected cat card bet: ${record.name} (${record.rarity.label}) +${amount}. It will apply when a round is waiting for action.`;
+  }
 }
 
 function openPoker() {
@@ -1063,10 +1203,11 @@ pokerCheckBtn?.addEventListener("click", pokerCheck);
 pokerRaiseBtn?.addEventListener("click", pokerRaise);
 pokerFoldBtn?.addEventListener("click", pokerFold);
 pokerNewBtn?.addEventListener("click", startPokerRound);
-pokerCatBetBtn?.addEventListener("click", addCatCardBet);
+pokerCatBetSelect?.addEventListener("change", onCatBetSelectionChange);
 pokerBetMinus?.addEventListener("click", () => updatePokerBet(pokerCurrentBet - 5));
 pokerBetPlus?.addEventListener("click", () => updatePokerBet(pokerCurrentBet + 5));
 pokerAllInBtn?.addEventListener("click", () => updatePokerBet(pokerBankroll));
+pokerRiggedBtn?.addEventListener("click", toggleRiggedMode);
 pokerModal?.addEventListener("click", (event) => {
   if (event.target === pokerModal) {
     closePoker();
@@ -1076,6 +1217,8 @@ pokerModal?.addEventListener("click", (event) => {
 window.addEventListener("DOMContentLoaded", () => {
   initializeTheme();
   loadPokerBankroll();
+  loadRiggedMode();
+  refreshRiggedButtonUi();
   pokerCurrentBet = clampPokerBet(pokerCurrentBet || 10);
   refreshPokerBankUi();
   if (!pokerState) {

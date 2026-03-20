@@ -651,13 +651,12 @@ main {
 
 .poker-catbet-controls {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr;
   gap: 0.45rem;
   margin-bottom: 0.7rem;
 }
 
-.poker-catbet-controls select,
-.poker-catbet-controls button {
+.poker-catbet-controls select {
   height: 2rem;
   border-radius: 10px;
   font: inherit;
@@ -670,15 +669,6 @@ main {
   padding: 0 0.5rem;
 }
 
-.poker-catbet-controls button {
-  border: 1px solid rgba(79, 51, 20, 0.28);
-  background: #fff;
-  color: #5b3817;
-  font-weight: 700;
-  padding: 0 0.68rem;
-  cursor: pointer;
-}
-
 .poker-bet-controls button {
   border: 1px solid rgba(79, 51, 20, 0.28);
   background: #fff;
@@ -687,6 +677,19 @@ main {
   padding: 0.38rem 0.68rem;
   font-weight: 700;
   cursor: pointer;
+}
+
+#pokerRiggedBtn {
+  margin-left: auto;
+  background: #2f3a4a;
+  color: #f3f8ff;
+  border-color: rgba(26, 40, 58, 0.6);
+}
+
+#pokerRiggedBtn.is-on {
+  background: #8a2f2f;
+  border-color: rgba(102, 24, 24, 0.7);
+  color: #fff2f2;
 }
 
 .poker-row {
@@ -797,7 +800,7 @@ main {
 }
 
 :root[data-theme="dark"] .poker-catbet-controls select,
-:root[data-theme="dark"] .poker-catbet-controls button {
+:root[data-theme="dark"] .poker-catbet-controls select {
   background: #2a3a49;
   border-color: rgba(145, 173, 206, 0.35);
   color: #ebf4fd;
@@ -807,6 +810,18 @@ main {
   background: #2a3a49;
   border-color: rgba(145, 173, 206, 0.35);
   color: #ebf4fd;
+}
+
+:root[data-theme="dark"] #pokerRiggedBtn {
+  background: #3a4d63;
+  border-color: rgba(172, 198, 226, 0.45);
+  color: #f1f7fe;
+}
+
+:root[data-theme="dark"] #pokerRiggedBtn.is-on {
+  background: #963939;
+  border-color: rgba(235, 145, 145, 0.45);
+  color: #fff1f1;
 }
 
 :root[data-theme="dark"] .poker-card-slot {
