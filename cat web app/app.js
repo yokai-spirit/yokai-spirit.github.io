@@ -110,6 +110,14 @@ const CAT_FORTUNES = [
   "The treat economy will shift in your favor."
 ];
 
+const HOVER_CAT_IMAGES = [
+  "/cats/adopt.png",
+  "/cats/arrogant.png",
+  "/cats/neko.png",
+  "/cats/stretch.png",
+  "/cats/yawn.png"
+];
+
 const CAT_TITLES = [
   "Grand Sofa Admiral",
   "Window Realm Ambassador",
@@ -235,6 +243,15 @@ function getRarity(seed) {
   return RARITY_CLASSES[0];
 }
 
+function pickHoverCatImage(seed) {
+  if (!HOVER_CAT_IMAGES.length) {
+    return "";
+  }
+
+  const idx = Math.abs(seed) % HOVER_CAT_IMAGES.length;
+  return HOVER_CAT_IMAGES[idx];
+}
+
 function createMetaList(profile) {
   const items = [
     { label: "Origin Detector", value: profile.origin },
@@ -293,6 +310,37 @@ function buildCard(record) {
 
   image.src = record.cat.url;
   image.alt = record.breed?.name ? `${record.breed.name} cat` : "Cat image";
+  image.dataset.originalSrc = record.cat.url;
+  image.dataset.originalAlt = image.alt;
+
+  image.addEventListener("mouseenter", () => {
+    const hoverSrc = pickHoverCatImage(record.seed + Math.floor(Date.now() / 1000));
+    if (!hoverSrc) {
+      return;
+    }
+
+    image.dataset.hoverActive = "1";
+    image.classList.add("is-hover-swap");
+    image.src = hoverSrc;
+    image.alt = `${record.name} hover image`;
+  });
+
+  image.addEventListener("mouseleave", () => {
+    image.dataset.hoverActive = "0";
+    image.classList.remove("is-hover-swap");
+    image.src = image.dataset.originalSrc || record.cat.url;
+    image.alt = image.dataset.originalAlt || (record.breed?.name ? `${record.breed.name} cat` : "Cat image");
+  });
+
+  image.addEventListener("error", () => {
+    if (image.dataset.hoverActive === "1") {
+      image.dataset.hoverActive = "0";
+      image.classList.remove("is-hover-swap");
+      image.src = image.dataset.originalSrc || record.cat.url;
+      image.alt = image.dataset.originalAlt || (record.breed?.name ? `${record.breed.name} cat` : "Cat image");
+    }
+  });
+
   title.textContent = record.name;
   rarityBadge.textContent = record.rarity.label;
   rarityBadge.classList.add(record.rarity.cssClass);

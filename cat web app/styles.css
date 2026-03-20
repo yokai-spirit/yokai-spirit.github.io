@@ -344,6 +344,15 @@ main {
   aspect-ratio: 4 / 3;
   object-fit: cover;
   background: var(--accent-soft);
+  transition: transform 220ms ease, filter 220ms ease;
+}
+
+.cat-card:hover .cat-image {
+  transform: scale(1.03);
+}
+
+.cat-image.is-hover-swap {
+  filter: saturate(1.1) contrast(1.04);
 }
 
 .cat-content {
