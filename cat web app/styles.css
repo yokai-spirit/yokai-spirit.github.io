@@ -1,0 +1,870 @@
+:root {
+  --bg-top: #f7efe6;
+  --bg-bottom: #fdf9f3;
+  --panel: #fffaf3;
+  --ink: #1b1f24;
+  --muted: #5b6572;
+  --accent: #e07a34;
+  --accent-soft: #ffd7b6;
+  --duel-panel-bg: rgba(255, 250, 243, 0.9);
+  --duel-panel-border: rgba(61, 56, 49, 0.1);
+  --shadow: 0 16px 34px rgba(36, 33, 28, 0.14);
+  --radius: 18px;
+}
+
+:root[data-theme="dark"] {
+  --bg-top: #121a22;
+  --bg-bottom: #1b2733;
+  --panel: #1f2a36;
+  --ink: #edf3f8;
+  --muted: #b7c4d1;
+  --accent: #f08f4c;
+  --accent-soft: #2f3f50;
+  --duel-panel-bg: rgba(33, 45, 58, 0.9);
+  --duel-panel-border: rgba(141, 167, 196, 0.28);
+  --shadow: 0 16px 34px rgba(10, 14, 20, 0.45);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Space Grotesk", "Segoe UI", sans-serif;
+  color: var(--ink);
+  background: radial-gradient(circle at 20% -10%, #ffe1cb 0%, transparent 35%),
+    radial-gradient(circle at 90% -20%, #f5c89d 0%, transparent 35%),
+    linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 62%);
+  min-height: 100vh;
+}
+
+.hero {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 3.2rem 1.2rem 1.5rem;
+  text-align: center;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+
+h1 {
+  margin: 0;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: clamp(2rem, 6vw, 4rem);
+}
+
+.subtitle {
+  max-width: 640px;
+  margin: 0.9rem auto 1.4rem;
+  color: var(--muted);
+}
+
+.hero-actions {
+  display: flex;
+  gap: 0.65rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.refresh-btn {
+  border: none;
+  background: linear-gradient(120deg, var(--accent) 0%, #f09e5f 100%);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.78rem 1.1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(224, 122, 52, 0.28);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.refresh-btn:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 12px 24px rgba(224, 122, 52, 0.36);
+}
+
+.theme-btn {
+  border: 1px solid rgba(52, 71, 92, 0.28);
+  background: #eef3f8;
+  color: #26384b;
+  font-weight: 700;
+  padding: 0.78rem 1.1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 180ms ease, background-color 180ms ease;
+}
+
+.theme-btn:hover {
+  transform: translateY(-2px) scale(1.01);
+}
+
+.poker-open-btn {
+  border: 1px solid rgba(63, 43, 16, 0.28);
+  background: #fff2d8;
+  color: #5c3512;
+  font-weight: 700;
+  padding: 0.78rem 1.1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 180ms ease, background-color 180ms ease;
+}
+
+.poker-open-btn:hover {
+  transform: translateY(-2px) scale(1.01);
+}
+
+:root[data-theme="dark"] .poker-open-btn {
+  background: #4f3a19;
+  border-color: rgba(239, 208, 150, 0.35);
+  color: #fff0d0;
+}
+
+:root[data-theme="dark"] .theme-btn {
+  background: #2b3a4a;
+  border-color: rgba(164, 191, 220, 0.38);
+  color: #e8f2fb;
+}
+
+main {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 1.2rem 2rem;
+}
+
+.duel-panel {
+  background: var(--duel-panel-bg);
+  border: 1px solid var(--duel-panel-border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+}
+
+.duel-panel h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.duel-panel p {
+  margin: 0.4rem 0 0.75rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.duel-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 0.65rem;
+  align-items: end;
+}
+
+.duel-controls label {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.84rem;
+  color: color-mix(in srgb, var(--ink) 78%, #6a7f98 22%);
+}
+
+.duel-controls select,
+.duel-controls button {
+  height: 2.2rem;
+  border-radius: 10px;
+  border: 1px solid rgba(61, 56, 49, 0.2);
+  padding: 0 0.6rem;
+  font: inherit;
+}
+
+.duel-controls button {
+  border: none;
+  background: #2f5d8a;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+:root[data-theme="dark"] .duel-controls select {
+  background: #263543;
+  color: #eaf2f9;
+  border-color: rgba(132, 162, 194, 0.45);
+}
+
+.duel-result {
+  min-height: 1.2rem;
+  margin-top: 0.6rem;
+  color: #2a3953;
+  font-weight: 600;
+}
+
+.status {
+  min-height: 1.5rem;
+  margin: 0.5rem 0 1rem;
+  color: var(--muted);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.cat-card {
+  background: color-mix(in srgb, var(--panel) 92%, #fff 8%);
+  border: 1px solid rgba(61, 56, 49, 0.08);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transform: translateY(14px);
+  animation: reveal 520ms ease forwards;
+}
+
+.cat-card.card-epic {
+  position: relative;
+  background: linear-gradient(165deg, #141825 0%, #1a2030 100%);
+  border: 1px solid transparent;
+}
+
+.cat-card.card-epic::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(120deg, #ff4d4d, #2fffa3, #4f8bff, #ff53c6);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.cat-card.card-epic .cat-title,
+.cat-card.card-epic .cat-description,
+.cat-card.card-epic .cat-meta,
+.cat-card.card-epic .cat-meta li span {
+  color: #e9efff;
+}
+
+.cat-card.card-epic .cat-fortune {
+  background: linear-gradient(90deg, rgba(61, 78, 130, 0.7) 0%, rgba(43, 56, 96, 0.8) 100%);
+  color: #eef3ff;
+  border-left-color: #6ea0ff;
+}
+
+.cat-card.card-epic .passport-btn {
+  background: #252e44;
+  border-color: #4f5f86;
+  color: #ecf2ff;
+}
+
+.cat-card.card-mythic {
+  position: relative;
+  background: linear-gradient(165deg, #ffb347 0%, #ff8f1f 55%, #ff7a00 100%);
+  border: 1px solid transparent;
+}
+
+.cat-card.card-mythic::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(120deg, #ff2b2b, #c41414 55%, #7d0a0a 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.cat-card.card-mythic .cat-title,
+.cat-card.card-mythic .cat-description,
+.cat-card.card-mythic .cat-meta,
+.cat-card.card-mythic .cat-meta li span {
+  color: #3f1c00;
+}
+
+.cat-card.card-mythic .cat-fortune {
+  background: linear-gradient(90deg, rgba(255, 236, 194, 0.75) 0%, rgba(255, 211, 130, 0.85) 100%);
+  color: #5a1f00;
+  border-left-color: #d11e1e;
+}
+
+.cat-card.card-mythic .passport-btn {
+  background: #fff1dc;
+  border-color: #cc4a1e;
+  color: #762200;
+}
+
+.cat-card.card-common {
+  position: relative;
+  background: linear-gradient(165deg, #2f343a 0%, #252a30 60%, #1d2126 100%);
+  border: 1px solid transparent;
+}
+
+.cat-card.card-common::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(120deg, #b7ffbe 0%, #8ee999 50%, #66d978 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.cat-card.card-common .cat-title,
+.cat-card.card-common .cat-description,
+.cat-card.card-common .cat-meta,
+.cat-card.card-common .cat-meta li span {
+  color: #e7f1ea;
+}
+
+.cat-card.card-common .cat-fortune {
+  background: linear-gradient(90deg, rgba(105, 140, 114, 0.55) 0%, rgba(83, 117, 94, 0.7) 100%);
+  color: #eff9f1;
+  border-left-color: #9df3a9;
+}
+
+.cat-card.card-common .passport-btn {
+  background: #313a35;
+  border-color: #8ad397;
+  color: #e8f7ec;
+}
+
+.cat-image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: var(--accent-soft);
+}
+
+.cat-content {
+  padding: 0.9rem 1rem 1rem;
+}
+
+.cat-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.18rem;
+}
+
+.cat-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.rarity-badge {
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.73rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.rarity-common {
+  background: #e7ecf2;
+  color: #47596d;
+}
+
+.rarity-epic {
+  background: #e9ddff;
+  color: #5a2f9e;
+}
+
+.rarity-mythic {
+  background: linear-gradient(135deg, #ff9c5f 0%, #ff6a3d 52%, #d63a2a 100%);
+  color: #fff4ea;
+  box-shadow: inset 0 0 0 1px rgba(130, 38, 20, 0.28);
+}
+
+.rarity-cosmic {
+  background: linear-gradient(135deg, #8ffcff 0%, #3af0ff 55%, #00d4ff 100%);
+  color: #003445;
+  box-shadow: 0 0 12px rgba(58, 240, 255, 0.45);
+}
+
+.rarity-unknown {
+  background: linear-gradient(135deg, #ff4d4d 0%, #ffd24d 28%, #58ff7b 52%, #49d7ff 74%, #d07bff 100%);
+  color: #111;
+  box-shadow: 0 0 14px rgba(124, 219, 255, 0.55);
+}
+
+.cat-card.card-cosmic {
+  position: relative;
+  background: linear-gradient(165deg, #09222a 0%, #0f313b 58%, #0a3e48 100%);
+  border: 1px solid transparent;
+}
+
+.cat-card.card-cosmic::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(120deg, #9cfbff 0%, #34f2ff 45%, #00b4ff 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.cat-card.card-cosmic .cat-title,
+.cat-card.card-cosmic .cat-description,
+.cat-card.card-cosmic .cat-meta,
+.cat-card.card-cosmic .cat-meta li span {
+  color: #d9faff;
+}
+
+.cat-card.card-cosmic .cat-fortune {
+  background: linear-gradient(90deg, rgba(72, 228, 245, 0.28) 0%, rgba(35, 189, 227, 0.35) 100%);
+  color: #dbfdff;
+  border-left-color: #56f4ff;
+}
+
+.cat-card.card-cosmic .passport-btn {
+  background: #12404a;
+  border-color: #55efff;
+  color: #e6fdff;
+}
+
+.cat-card.card-unknown {
+  position: relative;
+  background: linear-gradient(165deg, #1b1f33 0%, #22283f 52%, #1b2345 100%);
+  border: 1px solid transparent;
+}
+
+.cat-card.card-unknown::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.6px;
+  background: linear-gradient(120deg, #ff4d4d 0%, #ffd34d 25%, #5dff80 50%, #49d7ff 75%, #d07bff 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.cat-card.card-unknown .cat-title,
+.cat-card.card-unknown .cat-description,
+.cat-card.card-unknown .cat-meta,
+.cat-card.card-unknown .cat-meta li span {
+  color: #f5f8ff;
+}
+
+.cat-card.card-unknown .cat-fortune {
+  background: linear-gradient(90deg, rgba(255, 96, 96, 0.24) 0%, rgba(73, 215, 255, 0.24) 100%);
+  color: #f5f8ff;
+  border-left-color: #8cf9ff;
+}
+
+.cat-card.card-unknown .passport-btn {
+  background: #2a2f4b;
+  border-color: #92f4ff;
+  color: #f2f7ff;
+}
+
+.cat-description {
+  margin: 0 0 0.75rem;
+  color: #3b434d;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.cat-fortune {
+  margin: 0 0 0.8rem;
+  padding: 0.55rem 0.65rem;
+  border-left: 4px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  background: linear-gradient(90deg, rgba(255, 214, 180, 0.55) 0%, rgba(255, 240, 224, 0.7) 100%);
+  color: #51311f;
+  font-size: 0.86rem;
+  line-height: 1.4;
+}
+
+.passport-btn {
+  border: 1px solid rgba(61, 56, 49, 0.2);
+  background: #fff;
+  color: #2b313a;
+  border-radius: 10px;
+  padding: 0.45rem 0.65rem;
+  font-weight: 600;
+  margin: 0 0 0.8rem;
+  cursor: pointer;
+}
+
+.passport-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(24, 22, 19, 0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 30;
+}
+
+.passport-modal.open {
+  display: flex;
+}
+
+.passport-card {
+  width: min(520px, 100%);
+  background: #fffdf8;
+  border-radius: 16px;
+  border: 1px solid rgba(61, 56, 49, 0.14);
+  box-shadow: var(--shadow);
+  padding: 1rem 1rem 1.1rem;
+}
+
+:root[data-theme="dark"] .passport-card {
+  background: #253241;
+  border-color: rgba(149, 177, 208, 0.35);
+  color: #e8f1fa;
+}
+
+:root[data-theme="dark"] .passport-card p span,
+:root[data-theme="dark"] .passport-label,
+:root[data-theme="dark"] .passport-title,
+:root[data-theme="dark"] .passport-signature {
+  color: #c9d9e8;
+}
+
+.passport-close {
+  float: right;
+  border: none;
+  background: #f1ebe2;
+  border-radius: 999px;
+  padding: 0.34rem 0.72rem;
+  cursor: pointer;
+}
+
+.passport-label {
+  margin: 0;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: #746758;
+}
+
+.passport-title {
+  margin: 0.4rem 0 0.8rem;
+  color: #4b3b2f;
+}
+
+.passport-card p {
+  margin: 0.35rem 0;
+}
+
+.passport-card p span {
+  color: #625648;
+}
+
+.passport-signature {
+  margin-top: 0.8rem;
+  font-family: "Fraunces", Georgia, serif;
+  color: #533321;
+}
+
+.poker-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 16, 11, 0.58);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 35;
+}
+
+.poker-modal.open {
+  display: flex;
+}
+
+.poker-card {
+  width: min(760px, 100%);
+  background: #fffaf0;
+  border: 1px solid rgba(79, 51, 20, 0.22);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 1rem;
+}
+
+.poker-close {
+  float: right;
+  border: none;
+  background: #efe5d7;
+  border-radius: 999px;
+  padding: 0.34rem 0.72rem;
+  cursor: pointer;
+}
+
+.poker-status {
+  margin: 0.45rem 0 0.8rem;
+  color: #5a4730;
+  font-weight: 600;
+}
+
+.poker-round {
+  margin: 0.4rem 0 0;
+  color: #7a6344;
+  font-size: 0.84rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.poker-bankline {
+  margin: 0 0 0.65rem;
+  color: #4d3e2b;
+  font-size: 0.92rem;
+}
+
+.poker-separator {
+  margin: 0 0.45rem;
+  color: #8b7458;
+}
+
+.poker-bet-controls {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.7rem;
+}
+
+.poker-catbetline {
+  margin: 0 0 0.35rem;
+  color: #4d3e2b;
+  font-size: 0.9rem;
+}
+
+.poker-catbet-controls {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.45rem;
+  margin-bottom: 0.7rem;
+}
+
+.poker-catbet-controls select,
+.poker-catbet-controls button {
+  height: 2rem;
+  border-radius: 10px;
+  font: inherit;
+}
+
+.poker-catbet-controls select {
+  border: 1px solid rgba(79, 51, 20, 0.28);
+  background: #fff;
+  color: #5b3817;
+  padding: 0 0.5rem;
+}
+
+.poker-catbet-controls button {
+  border: 1px solid rgba(79, 51, 20, 0.28);
+  background: #fff;
+  color: #5b3817;
+  font-weight: 700;
+  padding: 0 0.68rem;
+  cursor: pointer;
+}
+
+.poker-bet-controls button {
+  border: 1px solid rgba(79, 51, 20, 0.28);
+  background: #fff;
+  color: #5b3817;
+  border-radius: 10px;
+  padding: 0.38rem 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.poker-row {
+  margin-bottom: 0.75rem;
+}
+
+.poker-row-label {
+  margin: 0 0 0.35rem;
+  color: #58462e;
+  font-size: 0.9rem;
+}
+
+.poker-hand {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(64px, 1fr));
+  gap: 0.5rem;
+}
+
+.poker-hand.hole-hand {
+  grid-template-columns: repeat(2, minmax(64px, 1fr));
+  max-width: 150px;
+}
+
+.poker-card-slot {
+  border: 1px solid rgba(79, 51, 20, 0.2);
+  border-radius: 10px;
+  min-height: 88px;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  font-weight: 700;
+  color: #2f2a24;
+}
+
+.poker-card-slot.back {
+  background: repeating-linear-gradient(45deg, #e8d9c2 0, #e8d9c2 6px, #d8c3a6 6px, #d8c3a6 12px);
+  color: #6a563c;
+}
+
+.poker-card-slot.player {
+  cursor: pointer;
+}
+
+.poker-card-slot.player.hold {
+  outline: 2px solid #2c8f58;
+  background: #f0fff4;
+}
+
+.poker-rank {
+  min-height: 1.1rem;
+  margin: 0.35rem 0 0;
+  color: #473621;
+  font-size: 0.88rem;
+}
+
+.poker-controls {
+  display: flex;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+  margin-top: 0.6rem;
+}
+
+.poker-controls button {
+  border: none;
+  border-radius: 10px;
+  padding: 0.5rem 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: #2f5d8a;
+  color: #fff;
+}
+
+#pokerCheckBtn {
+  background: #3f6f9f;
+}
+
+#pokerRaiseBtn {
+  background: #2d8659;
+}
+
+#pokerFoldBtn {
+  background: #9b3d3d;
+}
+
+:root[data-theme="dark"] .poker-card {
+  background: #222f3d;
+  border-color: rgba(148, 174, 205, 0.38);
+  color: #e6f0f8;
+}
+
+:root[data-theme="dark"] .poker-status,
+:root[data-theme="dark"] .poker-row-label,
+:root[data-theme="dark"] .poker-rank {
+  color: #c9d9e8;
+}
+
+:root[data-theme="dark"] .poker-round {
+  color: #c9d9e8;
+}
+
+:root[data-theme="dark"] .poker-bankline,
+:root[data-theme="dark"] .poker-separator {
+  color: #c9d9e8;
+}
+
+:root[data-theme="dark"] .poker-catbetline {
+  color: #c9d9e8;
+}
+
+:root[data-theme="dark"] .poker-catbet-controls select,
+:root[data-theme="dark"] .poker-catbet-controls button {
+  background: #2a3a49;
+  border-color: rgba(145, 173, 206, 0.35);
+  color: #ebf4fd;
+}
+
+:root[data-theme="dark"] .poker-bet-controls button {
+  background: #2a3a49;
+  border-color: rgba(145, 173, 206, 0.35);
+  color: #ebf4fd;
+}
+
+:root[data-theme="dark"] .poker-card-slot {
+  background: #2d3d4d;
+  border-color: rgba(145, 173, 206, 0.35);
+  color: #eaf3fc;
+}
+
+:root[data-theme="dark"] .poker-card-slot.player.hold {
+  outline-color: #7ae6aa;
+  background: #2f4e45;
+}
+
+:root[data-theme="dark"] .poker-close {
+  background: #324457;
+  color: #eaf3fc;
+}
+
+.cat-meta {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.28rem;
+  font-size: 0.86rem;
+  color: #3f4b5b;
+}
+
+.cat-meta li span {
+  color: #212734;
+  font-weight: 700;
+}
+
+@keyframes reveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding-top: 2.2rem;
+  }
+
+  .subtitle {
+    margin-bottom: 1.1rem;
+  }
+
+  .duel-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .poker-hand {
+    grid-template-columns: repeat(5, minmax(54px, 1fr));
+  }
+
+  .poker-hand.hole-hand {
+    max-width: 126px;
+  }
+}

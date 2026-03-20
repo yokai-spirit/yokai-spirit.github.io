@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cat Explorer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <p class="eyebrow">Live from The Cat API</p>
+      <h1>Cat Explorer</h1>
+      <p class="subtitle">Discover adorable cats and learn quick facts about them.</p>
+      <div class="hero-actions">
+        <button id="refreshBtn" class="refresh-btn" type="button">Load New Cats</button>
+        <button id="pokerOpenBtn" class="poker-open-btn" type="button">Play Classic Poker</button>
+        <button id="themeToggleBtn" class="theme-btn" type="button">Switch to Dark Theme</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="duel-panel" aria-label="Personality Duel">
+        <h2>Personality Duel</h2>
+        <p>Pick two cats and run a playful battle by temperament traits.</p>
+        <div class="duel-controls">
+          <label>
+            Cat A
+            <select id="duelCatA"></select>
+          </label>
+          <label>
+            Cat B
+            <select id="duelCatB"></select>
+          </label>
+          <button id="duelBtn" type="button">Run Duel</button>
+        </div>
+        <p id="duelResult" class="duel-result" aria-live="polite"></p>
+      </section>
+
+      <section id="status" class="status" aria-live="polite"></section>
+      <section id="cardGrid" class="card-grid" aria-label="Cat cards"></section>
+    </main>
+
+    <template id="cardTemplate">
+      <article class="cat-card">
+        <img class="cat-image" alt="Cat" loading="lazy" />
+        <div class="cat-content">
+          <div class="cat-title-row">
+            <h2 class="cat-title"></h2>
+            <span class="rarity-badge"></span>
+          </div>
+          <p class="cat-description"></p>
+          <p class="cat-fortune"></p>
+          <button class="passport-btn" type="button">View Cat Passport</button>
+          <ul class="cat-meta"></ul>
+        </div>
+      </article>
+    </template>
+
+    <section id="passportModal" class="passport-modal" aria-hidden="true">
+      <div class="passport-card" role="dialog" aria-modal="true" aria-labelledby="passportName">
+        <button id="passportClose" class="passport-close" type="button" aria-label="Close passport">Close</button>
+        <p class="passport-label">Feline Travel Bureau</p>
+        <h3 id="passportName"></h3>
+        <p id="passportTitle" class="passport-title"></p>
+        <p><span>Origin Stamp:</span> <strong id="passportOrigin"></strong></p>
+        <p><span>Rarity:</span> <strong id="passportRarity"></strong></p>
+        <p><span>Issued:</span> <strong id="passportIssue"></strong></p>
+        <p class="passport-signature">Signature Paw Mark: /\_/\</p>
+      </div>
+    </section>
+
+    <section id="pokerModal" class="poker-modal" aria-hidden="true">
+      <div class="poker-card" role="dialog" aria-modal="true" aria-labelledby="pokerTitle">
+        <button id="pokerClose" class="poker-close" type="button" aria-label="Close poker">Close</button>
+        <h3 id="pokerTitle">Classic Poker Table</h3>
+        <p id="pokerRound" class="poker-round">Round 1 of 3</p>
+        <p id="pokerStatus" class="poker-status">Press Deal to start a round.</p>
+        <p class="poker-bankline">
+          Bank: <strong id="pokerBank">100</strong> chips
+          <span class="poker-separator">|</span>
+          Bet: <strong id="pokerBet">10</strong> chips
+        </p>
+        <p class="poker-catbetline">Cat Bet: <strong id="pokerCatBetInfo">None</strong></p>
+        <div class="poker-catbet-controls">
+          <select id="pokerCatBetSelect"></select>
+          <button id="pokerCatBetBtn" type="button">Add Cat Card Bet</button>
+        </div>
+        <div class="poker-bet-controls">
+          <button id="pokerBetMinus" type="button">-5</button>
+          <button id="pokerBetPlus" type="button">+5</button>
+          <button id="pokerAllInBtn" type="button">All-In</button>
+        </div>
+
+        <div class="poker-row">
+          <p class="poker-row-label">Dealer Hole Cards</p>
+          <div id="dealerHand" class="poker-hand hole-hand"></div>
+          <p id="dealerRank" class="poker-rank"></p>
+        </div>
+
+        <div class="poker-row">
+          <p class="poker-row-label">Community Cards</p>
+          <div id="communityHand" class="poker-hand"></div>
+        </div>
+
+        <div class="poker-row">
+          <p class="poker-row-label">Your Hole Cards</p>
+          <div id="playerHand" class="poker-hand hole-hand"></div>
+          <p id="playerRank" class="poker-rank"></p>
+        </div>
+
+        <div class="poker-controls">
+          <button id="pokerDealBtn" type="button">Deal</button>
+          <button id="pokerCheckBtn" type="button">Check</button>
+          <button id="pokerRaiseBtn" type="button">Raise</button>
+          <button id="pokerFoldBtn" type="button">Fold</button>
+          <button id="pokerNewBtn" type="button">New Round</button>
+        </div>
+      </div>
+    </section>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>
