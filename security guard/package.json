@@ -1,0 +1,10 @@
+{
+  "name": "motion-guard",
+  "version": "1.0.0",
+  "description": "Camera motion reaction app with direction-based alarms",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "license": "MIT"
+}

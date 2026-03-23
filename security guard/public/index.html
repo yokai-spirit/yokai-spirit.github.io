@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Motion Guard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header>
+        <h1>Motion Guard</h1>
+        <p>Camera-based movement alarms with unique sounds per direction.</p>
+      </header>
+
+      <section class="video-zone">
+        <video id="camera" autoplay playsinline muted></video>
+        <canvas id="overlayCanvas" width="640" height="480" aria-hidden="true"></canvas>
+      </section>
+
+      <section class="controls">
+        <button id="startButton" type="button" class="pulse-idle">Start Camera</button>
+        <button id="themeToggle" type="button" class="small-btn">Theme: Dark</button>
+        <label>
+          Default Confidence Threshold
+          <input id="sensitivity" type="range" min="20" max="95" value="45" />
+        </label>
+        <label>
+          Motion Scale Threshold
+          <input id="scaleThreshold" type="range" min="0" max="0.45" step="0.01" value="0.08" />
+        </label>
+        <label>
+          Event Cooldown (ms: <span id="eventCooldownValue">1200</span>)
+          <input id="eventCooldown" type="range" min="300" max="5000" step="100" value="1200" />
+        </label>
+        <label>
+          Sound Cooldown (ms: <span id="soundCooldownValue">650</span>)
+          <input id="soundCooldown" type="range" min="250" max="4000" step="50" value="650" />
+        </label>
+        <label>
+          Per-Object Thresholds
+          <input
+            id="objectThresholds"
+            type="text"
+            value="person:0.58, car:0.72, dog:0.52"
+            placeholder="person:0.55, car:0.70"
+          />
+        </label>
+        <label>
+          Per-Object Cooldowns
+          <input
+            id="objectCooldowns"
+            type="text"
+            value="person:1700, car:2400, dog:1300"
+            placeholder="person:1800, dog:1400"
+          />
+        </label>
+        <button id="elaborateSettingsBtn" type="button" class="small-btn">Elaborate</button>
+        <p id="settingsHelp" class="settings-help is-hidden">
+          Thresholds use object:confidence between 0.05 and 0.99. Cooldowns use object:milliseconds between 200
+          and 10000. Example: person:0.60, car:0.75 and person:1800, car:2500.
+        </p>
+      </section>
+
+      <section class="status-grid">
+        <article>
+          <h2>Detected Movement</h2>
+          <p id="movementType" class="status-value">waiting...</p>
+        </article>
+        <article>
+          <h2>Detected Object</h2>
+          <p id="objectLabel" class="status-value">none</p>
+        </article>
+        <article>
+          <h2>Direction Intensity</h2>
+          <p id="motionIntensity" class="status-value">0</p>
+        </article>
+        <article>
+          <h2>Depth Trend</h2>
+          <p id="scaleTrend" class="status-value">none</p>
+        </article>
+        <article>
+          <h2>Model Status</h2>
+          <p id="modelStatus" class="status-value">loading model...</p>
+        </article>
+        <article>
+          <h2>Webhook</h2>
+          <p id="webhookStatus" class="status-value">checking...</p>
+        </article>
+      </section>
+
+      <section class="legend">
+        <h2>Tracked Objects</h2>
+        <ul id="trackedList"></ul>
+      </section>
+
+      <section class="legend">
+        <h2>Alarm Mapping</h2>
+        <ul>
+          <li>Left: low double beep</li>
+          <li>Right: sharp high beep</li>
+          <li>Up: rising chirp</li>
+          <li>Down: falling chirp</li>
+          <li>Forward: fast pulse</li>
+          <li>Backward: slow pulse</li>
+        </ul>
+      </section>
+
+      <section class="legend">
+        <h2>Recent Events</h2>
+        <p id="eventStatsLine">events: 0 | avg conf: 0.00 | avg intensity: 0.00</p>
+        <ul id="eventList"></ul>
+      </section>
+
+      <section class="legend dashboard">
+        <h2>Live Dashboard + Analytics</h2>
+        <div class="dashboard-grid">
+          <article>
+            <h3>Alert Frequency (Last 10m)</h3>
+            <canvas id="frequencyChart" width="460" height="170"></canvas>
+            <p id="alertsPerMinute">0 alerts/min</p>
+          </article>
+          <article>
+            <h3>Top Movement Types</h3>
+            <canvas id="movementChart" width="460" height="170"></canvas>
+            <p id="topMovement">none</p>
+          </article>
+          <article>
+            <h3>Most Active Hours</h3>
+            <canvas id="hourlyChart" width="460" height="170"></canvas>
+            <p id="mostActiveHour">n/a</p>
+          </article>
+          <article>
+            <h3>Heatmap (Alert Density)</h3>
+            <canvas id="heatmapChart" width="460" height="240"></canvas>
+          </article>
+        </div>
+      </section>
+
+      <p class="note">
+        Allow camera access when prompted. Sound starts after your first interaction due to browser autoplay rules.
+      </p>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd" defer></script>
+    <script src="app.js" defer></script>
+  </body>
+</html>
