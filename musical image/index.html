@@ -1,0 +1,1014 @@
+              <!DOCTYPE html>
+              <html lang="en">
+              <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Musical Image Standalone</title>
+                <style>
+                  /* ...existing code... */
+                </style>
+                <!-- Tone.js CDN for sound synthesis -->
+                <script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js"></script>
+                <script>
+                  // --- Color to Sound 3D Mapping ---
+                  // Hue → timbre/instrument
+                  // Brightness (lightness) → pitch
+                  // Saturation → distortion/intensity
+                  // Example mapping:
+                  // #FF0000 (red): distorted synth/kick
+                  // #FFA500 (orange): crunchy bass
+                  // #FFFF00 (yellow): high sine/chime
+                  // #00FF00 (green): digital pluck
+                  // #00FFFF (cyan): glassy pad
+                  // #0000FF (blue): deep bass
+                  // #800080 (purple): glitch FX
+                  // #FFFFFF (white): noise
+                  // #000000 (black): silence/rumble
+
+                  function hexToHSL(hex) {
+                    // Remove # if present
+                    hex = hex.replace(/^#/, '');
+                    if (hex.length === 3) {
+                      hex = hex.split('').map(x => x + x).join('');
+                    }
+                    const r = parseInt(hex.substring(0,2), 16) / 255;
+                    const g = parseInt(hex.substring(2,4), 16) / 255;
+                    const b = parseInt(hex.substring(4,6), 16) / 255;
+                    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+                    let h, s, l = (max + min) / 2;
+                    if (max === min) {
+                      h = s = 0; // achromatic
+                    } else {
+                      const d = max - min;
+                      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                      switch(max){
+                        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                        case g: h = (b - r) / d + 2; break;
+                        case b: h = (r - g) / d + 4; break;
+                      }
+                      h /= 6;
+                    }
+                    return {
+                      h: Math.round(h * 360),
+                      s: Math.round(s * 100),
+                      l: Math.round(l * 100)
+                    };
+                  }
+
+                  function colorToSoundParams(hex) {
+                    // --- Improved perceptual mapping ---
+                    // Convert hex to RGB
+                    hex = hex.replace(/^#/, '');
+                    if (hex.length === 3) hex = hex.split('').map(x => x + x).join('');
+                    const r = parseInt(hex.substring(0,2), 16);
+                    const g = parseInt(hex.substring(2,4), 16);
+                    const b = parseInt(hex.substring(4,6), 16);
+                    // Luminance (perceptual brightness)
+                    const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b; // 0-255
+                    // HSV value (max channel)
+                    const value = Math.max(r, g, b) / 255;
+                    // HSL for hue/sat
+                    const { h, s, l } = hexToHSL('#' + hex);
+                    // Pitch: exponential mapping (60Hz–6000Hz)
+                    // Use luminance for brightness
+                    const minHz = 60, maxHz = 6000;
+                    const pitch = minHz * Math.pow(maxHz / minHz, luminance / 255);
+                    // Volume: tie to both saturation and brightness, wide range
+                    let volume = -40 + (s / 100) * 20 + (luminance / 255) * 20;
+                    // Distortion: scale with both saturation and brightness
+                    let distortion = (s / 100) * 0.7 + (luminance / 255) * 0.3;
+                    // Envelope: bright = short, dark = long
+                    const attack = 0.01 + 0.19 * (1 - luminance / 255);
+                    const release = 0.1 + 1.2 * (1 - luminance / 255);
+                    // Pan: hue to stereo (blue/cyan wide, red center)
+                    let pan = 0;
+                    if (h >= 180 && h <= 260) pan = (h - 220) / 40; // blue/cyan: -1 to 1
+                    else if (h < 20 || h > 340) pan = 0; // red: center
+                    else pan = Math.sin((h / 360) * Math.PI * 2) * 0.7;
+                    // Instrument/timbre: blend between bands
+                    // Define synth params for each anchor hue
+                    const timbres = [
+                      {h:0,   osc:'sawtooth',   label:'distorted', fx:'dist', weight:0},    // red
+                      {h:30,  osc:'square',     label:'crunch',    fx:'drive', weight:0},    // orange
+                      {h:60,  osc:'triangle',   label:'chime',     fx:'none',  weight:0},    // yellow
+                      {h:120, osc:'pulse',      label:'pluck',     fx:'none',  weight:0},    // green
+                      {h:180, osc:'sine',       label:'pad',       fx:'reverb',weight:0},    // cyan
+                      {h:240, osc:'sine',       label:'bass',      fx:'sub',   weight:0},    // blue
+                      {h:280, osc:'fm',         label:'glitch',    fx:'mod',   weight:0},    // purple
+                      {h:360, osc:'sawtooth',   label:'distorted', fx:'dist',  weight:0}     // red wrap
+                    ];
+                    // Find two nearest anchors
+                    let idx = timbres.findIndex(t => h <= t.h);
+                    if (idx === -1) idx = timbres.length - 1;
+                    let t1 = timbres[idx-1 < 0 ? timbres.length-2 : idx-1];
+                    let t2 = timbres[idx];
+                    let blend = (h - t1.h) / (t2.h - t1.h);
+                    if (!isFinite(blend) || blend < 0) blend = 0;
+                    // Blend synth params
+                    function lerp(a, b, t) { return a + (b - a) * t; }
+                    // For now, just blend between osc types by picking closest
+                    let osc = blend < 0.5 ? t1.osc : t2.osc;
+                    let fx = blend < 0.5 ? t1.fx : t2.fx;
+                    let timbreLabel = blend < 0.5 ? t1.label : t2.label;
+                    // Low saturation/gray: noise or sine
+                    let isGray = s < 18;
+                    let isWhite = l > 92 && s < 12;
+                    let isBlack = l < 8;
+                    if (isWhite) {
+                      osc = 'noise'; fx = 'none'; timbreLabel = 'noise';
+                      volume = -10 + (luminance / 255) * 10;
+                      distortion = 0.1;
+                    } else if (isBlack) {
+                      osc = 'sine'; fx = 'sub'; timbreLabel = 'sub';
+                      volume = -40;
+                      distortion = 0.05;
+                    } else if (isGray) {
+                      osc = 'sine'; fx = 'none'; timbreLabel = 'muted';
+                      volume = -30 + (luminance / 255) * 10;
+                      distortion = 0.05;
+                    }
+                    // Add random jitter for realism
+                    const jitter = (amt) => (Math.random()-0.5)*amt;
+                    return {
+                      osc,
+                      fx,
+                      timbreLabel,
+                      pitch: pitch + jitter(8),
+                      distortion: Math.max(0, Math.min(1, distortion + jitter(0.08))),
+                      volume: volume + jitter(3),
+                      attack: Math.max(0.01, attack + jitter(0.01)),
+                      release: Math.max(0.05, release + jitter(0.05)),
+                      pan: Math.max(-1, Math.min(1, pan + jitter(0.2))),
+                      h, s, l, luminance, value
+                    };
+                  }
+                </script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Musical Image Standalone</title>
+  <style>
+        /* Hide default file input and style label as RGB button */
+        #photoInput {
+          display: none;
+        }
+        .rgb-file-label {
+          display: inline-block;
+          padding: 12px 28px;
+          font-size: 1.08rem;
+          font-weight: bold;
+          border-radius: 8px;
+          border: 2.5px solid transparent;
+          background: linear-gradient(90deg, #ff0040, #00ffd0, #0040ff, #ff0040);
+          background-size: 400% 400%;
+          color: #fff;
+          cursor: pointer;
+          margin-bottom: 18px;
+          margin-top: 8px;
+          box-shadow: 0 0 24px #00ffd088, 0 2px 12px #0040ff44;
+          animation: rgb-file-btn 3.5s linear infinite;
+          transition: box-shadow 0.2s, border-color 0.2s, transform 0.12s;
+          position: relative;
+          z-index: 2;
+        }
+        .rgb-file-label:hover {
+          box-shadow: 0 0 48px #00ffd0cc, 0 2px 16px #ff004044;
+          border-color: #00ffd0;
+          transform: scale(1.04);
+        }
+        .rgb-file-label:active {
+          box-shadow: 0 0 64px #0040ffcc, 0 2px 16px #ff004044;
+          border-color: #0040ff;
+          transform: scale(0.97);
+        }
+        @keyframes rgb-file-btn {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+    body {
+      background: #181a1b;
+      color: #f3f3f3;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+    }
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px 0;
+    }
+    .panel {
+      background: #23272a;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+      padding: 32px 24px 24px 24px;
+      width: 350px;
+      margin-bottom: 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 3px solid;
+      border-image: linear-gradient(120deg, #ff0040, #00ffd0, #0040ff, #ff0040) 1;
+      animation: rgb-border 3s linear infinite;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes rgb-border {
+      0% {
+        border-image-source: linear-gradient(120deg, #ff0040, #00ffd0, #0040ff, #ff0040);
+      }
+      50% {
+        border-image-source: linear-gradient(300deg, #00ffd0, #0040ff, #ff0040, #00ffd0);
+      }
+      100% {
+        border-image-source: linear-gradient(120deg, #ff0040, #00ffd0, #0040ff, #ff0040);
+      }
+    }
+    .upload-label {
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+    }
+    input[type="file"] {
+      margin-bottom: 18px;
+    }
+    .music-settings {
+      background: #181a1b;
+      border-radius: 10px;
+      padding: 18px 16px;
+      width: 100%;
+      margin-top: 12px;
+      box-sizing: border-box;
+    }
+    .music-settings label {
+      display: block;
+      margin-bottom: 8px;
+      color: #b3b3b3;
+    }
+    .music-settings input[type="range"] {
+      width: 100%;
+    }
+    .music-settings select {
+      width: 100%;
+      padding: 4px;
+      background: #23272a;
+      color: #f3f3f3;
+      border: none;
+      border-radius: 4px;
+    }
+    button, .rgb-file-label {
+      background: linear-gradient(90deg, #ff0040, #00ffd0, #0040ff, #ff0040);
+      background-size: 400% 400%;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 28px;
+      font-size: 1.08rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 0 24px #00ffd088, 0 2px 12px #0040ff44;
+      animation: rgb-file-btn 3.5s linear infinite;
+      transition: box-shadow 0.2s, border-color 0.2s, transform 0.12s, background 0.2s;
+      position: relative;
+      overflow: hidden;
+      border: 2.5px solid transparent;
+      z-index: 2;
+    }
+    button:hover:not(:disabled), .rgb-file-label:hover {
+      box-shadow: 0 0 48px #00ffd0cc, 0 2px 16px #ff004044;
+      border-color: #00ffd0;
+      transform: scale(1.04);
+    }
+    button:active:not(:disabled), .rgb-file-label:active {
+      box-shadow: 0 0 64px #0040ffcc, 0 2px 16px #ff004044;
+      border-color: #0040ff;
+      transform: scale(0.97);
+    }
+    button:disabled {
+      background: #444b52 !important;
+      cursor: not-allowed;
+      box-shadow: none;
+      color: #888 !important;
+      border-color: #444b52 !important;
+      animation: none !important;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <header style="width:100%;text-align:center;padding:24px 0 8px 0;background:#202225;border-bottom:2px solid #444;margin-bottom:18px;">
+    <h1 style="margin:0;font-size:2.2rem;letter-spacing:1px;">🎵 Musical Image Generator</h1>
+    <p style="margin:8px 0 0 0;color:#b3b3b3;font-size:1.1rem;">Upload a photo, analyze its colors, and turn them into music tracks!</p>
+  </header>
+  <div class="app-container" style="flex-direction: row; align-items: flex-start; justify-content: center;">
+    <div class="panel" id="tracksPanelContainer" style="display:flex; flex-direction:column; min-width:320px; margin-right:32px; align-items: flex-start;">
+            <div id="aiSettingsPanel" style="margin-bottom:18px;padding:12px 10px 10px 10px;background:#23272a;border-radius:10px;border:1.5px solid #444;">
+              <div style="margin-bottom:8px;font-weight:bold;color:#00ffd0;">AI Settings</div>
+              <label style="font-size:0.98em;color:#aaa;">Hex Quantity: <span id="hexQtyValue">10</span></label>
+              <input id="hexQtySlider" type="range" min="1" max="15" value="10" style="width:120px;vertical-align:middle;margin:0 8px 0 8px;" />
+              <br />
+              <label style="font-size:0.98em;color:#aaa;">Color Palette Aim:</label>
+              <select id="paletteAim" style="margin-left:8px;padding:2px 8px;border-radius:5px;background:#181a1b;color:#fff;border:1px solid #444;">
+                <option value="similar">Similar</option>
+                <option value="darker">Darker</option>
+                <option value="brighter">Brighter</option>
+              </select>
+              <br />
+              <label style="font-size:0.98em;color:#aaa;display:inline-block;margin-top:8px;">
+                <!-- Breakcore Melody removed -->
+              </label>
+            </div>
+      <h3 style="margin:0 0 8px 0;">Beat Grid</h3>
+      <div id="beatsGrid" style="display:flex; flex-direction:column;"></div>
+      <div id="addBeatPanel" style="margin-top:18px;display:flex;align-items:center;">
+        <input id="customHexInput" type="text" placeholder="#RRGGBB" maxlength="7" style="width:90px;margin-right:6px;border-radius:4px;border:1px solid #444;padding:4px 6px;background:#23272a;color:#f3f3f3;" />
+        <input id="colorPicker" type="color" value="#ff0000" style="width:36px;height:36px;border:none;margin-right:6px;cursor:pointer;background:none;" />
+        <button id="addHexBtn" style="padding:6px 12px;">Add Hex Color</button>
+      </div>
+      <div style="margin:10px 0;display:flex;align-items:center;">
+        <button id="addTrackBtn" style="padding:6px 14px;margin-right:8px;">Add Track</button>
+        <button id="aiMelodyBtn" style="padding:6px 14px;margin-right:8px;">AI Melody</button>
+        <button id="playSoundtrackBtn" style="padding:6px 14px;margin-right:8px;">Play Soundtrack</button>
+        <button id="clearTracksBtn" style="padding:6px 14px;background:#e74c3c;">Clear Tracks</button>
+      </div>
+          <style>
+            #tracksPanelContainer {
+              width: 600px !important;
+              min-width: 600px !important;
+              max-width: 100vw;
+            }
+          </style>
+    </div>
+    <!-- Personal Track panel removed -->
+    <div class="panel">
+      <div class="upload-label">Upload Photo</div>
+      <div id="feedbackMsg" style="display:none;margin-bottom:10px;color:#e74c3c;font-weight:bold;"></div>
+      <div id="loadingSpinner" style="display:none;margin-bottom:10px;text-align:center;">
+        <span style="display:inline-block;width:32px;height:32px;border:4px solid #7289da;border-top:4px solid #23272a;border-radius:50%;animation:spin 1s linear infinite;"></span>
+      </div>
+      <label for="photoInput" class="rgb-file-label">Browse Image</label>
+      <input type="file" id="photoInput" accept="image/*" />
+      <img id="previewImg" src="" alt="Preview" style="display:none;width:400px;height:400px;object-fit:cover;margin-bottom:16px;border-radius:12px;box-shadow:0 2px 12px #0006;" />
+      <button id="analyzeBtn" disabled>Analyze & Generate Music</button>
+      <div class="music-settings">
+        <label for="tempo">Tempo: <span id="tempoValue">120</span> BPM</label>
+        <input type="range" id="tempo" min="60" max="180" value="120" />
+        <label for="scale">Scale</label>
+        <select id="scale">
+          <option value="major">Major</option>
+          <option value="minor">Minor</option>
+          <option value="pentatonic">Pentatonic</option>
+        </select>
+        <label for="instrument">Instrument</label>
+        <select id="instrument">
+          <option value="synth">Synth</option>
+          <option value="piano">Piano</option>
+          <option value="pluck">Pluck</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <script>
+                // Play Soundtrack: play all hexes in beatColors in queue order, using Tone.js
+                const playSoundtrackBtn = document.getElementById('playSoundtrackBtn');
+                let playTimeouts = [];
+                if (playSoundtrackBtn) {
+                  playSoundtrackBtn.addEventListener('click', async () => {
+                    playTimeouts.forEach(clearTimeout);
+                    playTimeouts = [];
+                    playSoundtrackBtn.disabled = true;
+                    if (!Array.isArray(beatColors) || beatColors.length === 0) {
+                      showFeedback('No beats to play!', '#e74c3c');
+                      playSoundtrackBtn.disabled = false;
+                      return;
+                    }
+                    // Ensure Tone.js context is started
+                    if (window.Tone && Tone.context && Tone.context.state !== 'running') {
+                      await Tone.start();
+                    }
+                    // Use a simple synth for demo
+                    const synth = new Tone.Synth({
+                      oscillator: { type: 'triangle' },
+                      envelope: { attack: 0.02, decay: 0.1, sustain: 0.2, release: 0.3 }
+                    }).toDestination();
+                    let i = 0;
+                    function playNext() {
+                      if (i >= beatColors.length) {
+                        highlightBeat(-1);
+                        playSoundtrackBtn.disabled = false;
+                        synth.dispose();
+                        return;
+                      }
+                      highlightBeat(i);
+                      const hex = beatColors[i];
+                      const params = colorToSoundParams(hex);
+                      // Map pitch (Hz) to closest MIDI note
+                      const midi = Tone.Frequency(params.pitch, "hz").toMidi();
+                      const note = Tone.Frequency(midi, "midi").toNote();
+                      synth.volume.value = params.volume;
+                      synth.triggerAttackRelease(note, params.release, undefined, 0.9);
+                      i++;
+                      playTimeouts.push(setTimeout(playNext, 220));
+                    }
+                    playNext();
+                  });
+                }
+
+                // Helper to highlight the currently playing cell in the grid
+                function highlightBeat(idx) {
+                  const grid = document.getElementById('beatsGrid');
+                  if (!grid) return;
+                  // Flatten all cells in all rows
+                  const rows = Array.from(grid.children);
+                  const cells = rows.flatMap(row => Array.from(row.children));
+                  cells.forEach((cell, i) => {
+                    if (i === idx && idx >= 0 && idx < beatColors.length) {
+                      cell.style.boxShadow = '0 0 16px 4px #00ffd0, 0 0 8px 2px #ff0040';
+                      cell.style.border = '2.5px solid #fff';
+                      cell.style.transform = 'scale(1.18)';
+                      cell.style.zIndex = '2';
+                    } else {
+                      cell.style.boxShadow = '';
+                      cell.style.border = '2px solid #222';
+                      cell.style.transform = '';
+                      cell.style.zIndex = '';
+                    }
+                  });
+                }
+                // Helper: color to pitch
+                function colorToPitch(hex, idx) {
+                  const baseNotes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+                  const r = parseInt(hex.substr(1,2),16);
+                  const g = parseInt(hex.substr(3,2),16);
+                  const b = parseInt(hex.substr(5,2),16);
+                  const noteIdx = (r + g + b + idx*13) % baseNotes.length;
+                  const octave = 2 + Math.floor(((r + g + b) / 3) / 32); // 2-5
+                  return baseNotes[noteIdx] + octave;
+                }
+            // Add beat via hex input or color picker
+            const customHexInput = document.getElementById('customHexInput');
+            const colorPicker = document.getElementById('colorPicker');
+            const addHexBtn = document.getElementById('addHexBtn');
+            const aiMelodyBtn = document.getElementById('aiMelodyBtn');
+            if (colorPicker && customHexInput) {
+              colorPicker.addEventListener('input', () => {
+                customHexInput.value = colorPicker.value;
+              });
+              customHexInput.addEventListener('input', () => {
+                if (/^#[0-9a-fA-F]{6}$/.test(customHexInput.value)) {
+                  colorPicker.value = customHexInput.value;
+                }
+              });
+            }
+            if (addHexBtn) {
+              addHexBtn.addEventListener('click', () => {
+                const hex = customHexInput.value.trim();
+                if (/^#[0-9a-fA-F]{6}$/.test(hex)) {
+                  if (beatColors.length >= 15) {
+                    showFeedback('Max 15 hexes allowed.', '#e74c3c');
+                    return;
+                  }
+                  if (beatColors.includes(hex)) {
+                    showFeedback('Hex already in grid.', '#e74c3c');
+                    return;
+                  }
+                  beatColors.push(hex);
+                  // Keep tracks[0] in sync
+                  if (tracks.length === 0) tracks.push([...beatColors]);
+                  else tracks[0] = [...beatColors];
+                  renderBeatsGrid(beatColors);
+                  customHexInput.value = '';
+                } else {
+                  customHexInput.style.border = '1.5px solid #e74c3c';
+                  setTimeout(() => { customHexInput.style.border = '1px solid #444'; }, 900);
+                }
+              });
+            }
+            if (aiMelodyBtn) {
+              aiMelodyBtn.addEventListener('click', () => {
+                // Use AI settings
+                const qtySlider = document.getElementById('hexQtySlider');
+                const aimSelect = document.getElementById('paletteAim');
+                let count = 10;
+                if (qtySlider) count = Math.max(1, Math.min(15, parseInt(qtySlider.value) || 10));
+                let aim = 'similar';
+                if (aimSelect) aim = aimSelect.value;
+                let palette = [];
+                // Always use selected palette aim
+                const baseHue = Math.floor(Math.random() * 360);
+                for (let i = 0; i < count; i++) {
+                  const hue = (baseHue + i * (360 / count)) % 360;
+                  let sat = 70;
+                  let light = 50;
+                  if (aim === 'darker') {
+                    sat = 60 + Math.floor(10 * Math.sin(i));
+                    light = 22 + Math.floor(8 * Math.cos(i)); // 22-30%
+                  } else if (aim === 'brighter') {
+                    sat = 60 + Math.floor(10 * Math.sin(i));
+                    light = 70 + Math.floor(8 * Math.cos(i)); // 70-78%
+                  } else if (aim === 'similar') {
+                    sat = 65 + Math.floor(15 * Math.sin(i));
+                    light = 45 + Math.floor(10 * Math.cos(i));
+                  }
+                  palette.push(hslToHex(hue, sat, light));
+                }
+                // Update both beatColors and tracks[0] for full sync
+                beatColors = [...palette];
+                if (tracks.length === 0) tracks.push([...palette]);
+                else tracks[0] = [...palette];
+                renderBeatsGrid(beatColors);
+                showFeedback('AI melody generated!', '#00ffd0');
+              });
+    // Update hex quantity label
+    const hexQtySlider = document.getElementById('hexQtySlider');
+    const hexQtyValue = document.getElementById('hexQtyValue');
+    if (hexQtySlider && hexQtyValue) {
+      hexQtySlider.addEventListener('input', () => {
+        hexQtyValue.textContent = hexQtySlider.value;
+      });
+    }
+
+              // Helper: HSL to HEX
+              function hslToHex(h, s, l) {
+                s /= 100;
+                l /= 100;
+                let c = (1 - Math.abs(2 * l - 1)) * s;
+                let x = c * (1 - Math.abs((h / 60) % 2 - 1));
+                let m = l - c/2;
+                let r=0, g=0, b=0;
+                if (0 <= h && h < 60) { r = c; g = x; b = 0; }
+                else if (60 <= h && h < 120) { r = x; g = c; b = 0; }
+                else if (120 <= h && h < 180) { r = 0; g = c; b = x; }
+                else if (180 <= h && h < 240) { r = 0; g = x; b = c; }
+                else if (240 <= h && h < 300) { r = x; g = 0; b = c; }
+                else if (300 <= h && h < 360) { r = c; g = 0; b = x; }
+                r = Math.round((r + m) * 255);
+                g = Math.round((g + m) * 255);
+                b = Math.round((b + m) * 255);
+                return '#' + r.toString(16).padStart(2, '0') + g.toString(16).padStart(2, '0') + b.toString(16).padStart(2, '0');
+              }
+            }
+        // Helper to render the 4-column beat grid as rows
+        function renderBeatsGrid(colors) {
+          const gridId = 'beatsGrid';
+          let grid = document.getElementById(gridId);
+          if (!grid) {
+            // Create the grid container if it doesn't exist
+            const panel = document.getElementById('tracksPanelContainer');
+            grid = document.createElement('div');
+            grid.id = gridId;
+            grid.style.marginTop = '16px';
+            panel.appendChild(grid);
+          }
+          grid.innerHTML = '';
+          if (!Array.isArray(colors)) return;
+          const BEATS_PER_ROW = 4;
+          for (let i = 0; i < colors.length; i += BEATS_PER_ROW) {
+            const row = document.createElement('div');
+            row.style.display = 'flex';
+            row.style.marginBottom = '8px';
+            for (let j = 0; j < BEATS_PER_ROW && (i + j) < colors.length; j++) {
+              const idx = i + j;
+              const cell = document.createElement('div');
+              cell.style.width = '36px';
+              cell.style.height = '36px';
+              cell.style.marginRight = '8px';
+              cell.style.background = colors[idx] || '#222';
+              cell.style.borderRadius = '7px';
+              cell.style.border = '2px solid #222';
+              cell.title = colors[idx] || '';
+              row.appendChild(cell);
+            }
+            grid.appendChild(row);
+          }
+        }
+    const photoInput = document.getElementById('photoInput');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const tempo = document.getElementById('tempo');
+    const tempoValue = document.getElementById('tempoValue');
+    const scale = document.getElementById('scale');
+    const instrument = document.getElementById('instrument');
+    const resultPanel = document.getElementById('resultPanel');
+
+    const objectsDiv = document.getElementById('objects');
+    const musicDiv = document.getElementById('music');
+
+    let selectedPhoto = null;
+    const previewImg = document.getElementById('previewImg');
+    // When a photo is uploaded, keep it visible, extract 10 most frequent colors, and set up a melody/track immediately
+    photoInput.addEventListener('change', (e) => {
+      selectedPhoto = e.target.files[0];
+      analyzeBtn.disabled = !selectedPhoto;
+      if (selectedPhoto) {
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+          previewImg.src = ev.target.result;
+          previewImg.style.display = 'block';
+          previewImg.onload = function() {
+            // Extract 10 most frequent colors and set up a track
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = previewImg.naturalWidth;
+            canvas.height = previewImg.naturalHeight;
+            ctx.drawImage(previewImg, 0, 0);
+            const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+            const colorCount = {};
+            for (let y = 0; y < canvas.height; y += 8) {
+              for (let x = 0; x < canvas.width; x += 8) {
+                const idx = (y * canvas.width + x) * 4;
+                const r = data[idx], g = data[idx+1], b = data[idx+2];
+                const hex = rgbToHex(r, g, b);
+                colorCount[hex] = (colorCount[hex] || 0) + 1;
+              }
+            }
+            const sorted = Object.entries(colorCount).sort((a, b) => b[1] - a[1]);
+            const topColors = sorted.slice(0, 10).map(([hex]) => hex);
+            // Set up the melody/track immediately
+            beatColors = [...topColors];
+            tracks = [[...topColors]];
+            renderBeatsGrid(beatColors);
+            showFeedback('Extracted 10 most frequent colors and set up a melody!', '#2ecc40');
+          };
+        };
+        reader.readAsDataURL(selectedPhoto);
+      }
+    });
+    // Helper for color conversion
+    function rgbToHex(r, g, b) {
+      return (
+        '#' +
+        r.toString(16).padStart(2, '0') +
+        g.toString(16).padStart(2, '0') +
+        b.toString(16).padStart(2, '0')
+      );
+    }
+    let tracks = [];
+    let beatColors = [];
+    // Persistent Auto Play state
+    // Auto Play state removed
+    function showBeatPanel(colors) {
+              // Play Soundtrack event handler
+              let soundtrackTimeouts = [];
+              document.getElementById('playSoundtrackBtn').onclick = async () => {
+                // Prevent overlapping playbacks
+                soundtrackTimeouts.forEach(clearTimeout);
+                soundtrackTimeouts = [];
+                const btn = document.getElementById('playSoundtrackBtn');
+                btn.disabled = true;
+                try {
+                  if (!window.Tone) await loadTone();
+                  if (window.Tone && Tone.context && Tone.context.state !== 'running') {
+                    await Tone.start();
+                  }
+                  // Gather all beats in all tracks, left to right, top to bottom
+                  let allBeats = [];
+                  for (let tIdx = 0; tIdx < tracks.length; tIdx++) {
+                    for (let idx = 0; idx < tracks[tIdx].length; idx++) {
+                      const color = tracks[tIdx][idx];
+                      if (typeof color === 'string' && /^#[0-9a-fA-F]{6}$/.test(color)) {
+                        allBeats.push({ color, tIdx, idx });
+                      }
+                    }
+                  }
+                  if (allBeats.length === 0) {
+                    showFeedback('No beats to play!', '#e74c3c');
+                    btn.disabled = false;
+                    return;
+                  }
+                  // Aggressive synth
+                  const synth = new Tone.MonoSynth({
+                    oscillator: { type: 'square' },
+                    filter: { Q: 4, type: 'highpass', rolloff: -24 },
+                    envelope: { attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.2 }
+                  }).connect(new Tone.Distortion(0.7).toDestination());
+                  // Drum machines
+                  const kick = new Tone.MembraneSynth().connect(new Tone.Distortion(0.6).toDestination());
+                  const snare = new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.005, decay: 0.13, sustain: 0 } })
+                    .connect(new Tone.Distortion(0.5).toDestination());
+                  const hat = new Tone.MetalSynth({ frequency: 200, envelope: { attack: 0.001, decay: 0.08, release: 0.02 }, harmonicity: 5.1, modulationIndex: 32, resonance: 4000, octaves: 1.5 })
+                    .connect(new Tone.Distortion(0.4).toDestination());
+
+                  let i = 0;
+                  function playNextBeat() {
+                    if (i >= allBeats.length) {
+                      renderTracksPanel(-1, -1);
+                      btn.disabled = false;
+                      return;
+                    }
+                    const beat = allBeats[i];
+                    const pitch = colorToPitch(beat.color, i);
+                    synth.triggerAttackRelease(pitch, '16n');
+                    if (Math.random() > 0.5) kick.triggerAttackRelease('C1', '8n');
+                    if (Math.random() > 0.7) snare.triggerAttackRelease('8n', undefined, 0.09);
+                    if (Math.random() > 0.3) hat.triggerAttackRelease('16n', undefined, 0.04);
+                    renderTracksPanel(beat.tIdx, beat.idx);
+                    i++;
+                    soundtrackTimeouts.push(setTimeout(playNextBeat, 180));
+                  }
+                  playNextBeat();
+                } catch (e) {
+                  showFeedback('Audio context error. Tap again.', '#e74c3c');
+                  btn.disabled = false;
+                }
+              };
+        // Auto Play feature removed
+            // AI Melody button logic
+            document.getElementById('aiMelodyBtn').onclick = async () => {
+                // AI only generates beats (fills tracks[0] with a new melody), does not play them
+                let palette = [];
+                for (let i = 0; i < 10; i++) {
+                  const r = Math.floor(128 + Math.random() * 127);
+                  const g = Math.floor(128 + Math.random() * 127);
+                  const b = Math.floor(128 + Math.random() * 127);
+                  palette.push(rgbToHex(r, g, b));
+                }
+                tracks[0] = [...palette];
+                beatColors = [...palette];
+                renderTracksPanel();
+                renderPersonalPanel();
+                showFeedback('AI melody generated! Track ready to play.', '#00ffd0');
+            };
+      // Ensure colors is always an array
+      if (!Array.isArray(colors)) colors = [];
+      beatColors = [...colors];
+      // Also update the first track (main picture track) to match beatColors if it exists
+      if (tracks.length > 0) {
+        tracks[0] = [...beatColors];
+      }
+      renderTracksPanel();
+      // Add custom hex color
+      const input = document.getElementById('customHexInput');
+      const colorPicker = document.getElementById('colorPicker');
+      // Sync color picker to input
+      colorPicker.oninput = () => {
+        input.value = colorPicker.value;
+      };
+      input.oninput = () => {
+        if (/^#[0-9a-fA-F]{6}$/.test(input.value)) {
+          colorPicker.value = input.value;
+        }
+      };
+      document.getElementById('addHexBtn').onclick = () => {
+        const hex = input.value.trim();
+        if (/^#[0-9a-fA-F]{6}$/.test(hex) && !beatColors.includes(hex)) {
+          beatColors.push(hex);
+          showBeatPanel(beatColors);
+          input.value = '';
+        } else {
+          input.style.border = '1.5px solid #e74c3c';
+          setTimeout(() => { input.style.border = '1px solid #444'; }, 900);
+        }
+      };
+      document.getElementById('addTrackBtn').onclick = () => {
+        tracks.push([]); // Always add a new empty track
+        selectedTrackIdx = tracks.length - 1;
+        renderTracksPanel();
+        // renderPersonalPanel(); // Personal panel removed
+      };
+      // Play All Tracks event handler removed
+      document.getElementById('clearTracksBtn').onclick = () => {
+        tracks = [];
+        beatColors = [];
+        renderTracksPanel();
+        showFeedback('All tracks cleared!', '#e74c3c');
+      };
+    }
+
+      let selectedTrackIdx = null;
+      function renderTracksPanel(activeIdx = -1, activeBeat = -1) {
+        // Track labels and controls
+        const panel = document.getElementById('tracksPanel');
+        if (!panel) return; // Defensive: avoid null reference
+        panel.innerHTML = '';
+        tracks.forEach((track, tIdx) => {
+          const row = document.createElement('div');
+          row.style.display = 'flex';
+          row.style.alignItems = 'center';
+          row.style.marginBottom = '8px';
+          // Track label (clickable)
+          const label = document.createElement('span');
+          label.textContent = `Track ${tIdx+1}`;
+          label.style.color = '#aaa';
+          label.style.fontSize = '0.98em';
+          label.style.marginRight = '10px';
+          label.style.cursor = 'pointer';
+          label.onclick = () => {
+            selectedTrackIdx = tIdx;
+            renderPersonalPanel();
+          };
+          row.appendChild(label);
+          // Add color buttons
+          beatColors.forEach(hex => {
+            const btn = document.createElement('button');
+            btn.style.background = hex;
+            btn.style.border = '2px solid #444';
+            btn.style.width = '22px';
+            btn.style.height = '22px';
+            btn.style.marginRight = '4px';
+            btn.style.marginBottom = '0px';
+            btn.style.borderRadius = '6px';
+            btn.title = `Add ${hex}`;
+            btn.onclick = () => {
+              track.push(hex);
+              renderTracksPanel();
+              if (selectedTrackIdx === tIdx) renderPersonalPanel();
+            };
+            row.appendChild(btn);
+          });
+          // Remove track button
+          if (tracks.length > 1) {
+            const del = document.createElement('button');
+            del.textContent = '✕';
+            del.title = 'Remove track';
+            del.style.marginLeft = '8px';
+            del.style.background = '#23272a';
+            del.style.color = '#e74c3c';
+            del.style.border = 'none';
+            del.style.fontSize = '1.1em';
+            del.style.cursor = 'pointer';
+            del.onclick = () => {
+              tracks.splice(tIdx, 1);
+              renderTracksPanel();
+              if (selectedTrackIdx === tIdx) {
+                selectedTrackIdx = null;
+                renderPersonalPanel();
+              }
+            };
+            row.appendChild(del);
+          }
+          panel.appendChild(row);
+        });
+
+        // Track lines (all beats for all tracks)
+        const linesPanel = document.getElementById('trackLinesPanel');
+        if (!linesPanel) return; // Defensive: avoid null reference
+        linesPanel.innerHTML = '';
+        let globalBeatIdx = 0;
+        tracks.forEach((track, tIdx) => {
+          // Container for the whole track (label + beats)
+          const trackContainer = document.createElement('div');
+          trackContainer.style.display = 'flex';
+          trackContainer.style.flexDirection = 'column';
+          trackContainer.style.marginBottom = '10px';
+          trackContainer.style.marginLeft = '10px';
+
+          // Track label
+          const num = document.createElement('span');
+          num.textContent = `Track ${tIdx+1}:`;
+          num.style.color = '#888';
+          num.style.fontSize = '0.95em';
+          num.style.marginBottom = '4px';
+          trackContainer.appendChild(num);
+
+          // Beats in rows of 4
+          const BEATS_PER_ROW = 4;
+          for (let i = 0; i < track.length; i += BEATS_PER_ROW) {
+            const row = document.createElement('div');
+            row.style.display = 'flex';
+            row.style.gap = '6px';
+            row.style.marginBottom = '6px';
+            track.slice(i, i + BEATS_PER_ROW).forEach((hex, j) => {
+              const beat = document.createElement('span');
+              beat.style.display = 'inline-block';
+              beat.style.width = '28px';
+              beat.style.height = '28px';
+              beat.style.background = hex;
+              beat.style.borderRadius = '6px';
+              beat.style.border = '2px solid #222';
+              beat.title = hex;
+              // Highlight if this is the currently playing beat
+              if (
+                (typeof activeIdx === 'number' && typeof activeBeat === 'number') &&
+                activeIdx === tIdx && activeBeat === (i + j)
+              ) {
+                beat.style.boxShadow = '0 0 16px 4px #00ffd0, 0 0 8px 2px #ff0040';
+                beat.style.border = '2.5px solid #fff';
+                beat.style.transform = 'scale(1.18)';
+                beat.style.zIndex = '2';
+              }
+              row.appendChild(beat);
+              globalBeatIdx++;
+            });
+            trackContainer.appendChild(row);
+          }
+          linesPanel.appendChild(trackContainer);
+        });
+      }
+
+     
+    function colorToPitch(hex, idx) {
+      // Map hex color to a note (C2 to C5)
+      const baseNotes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+      const r = parseInt(hex.substr(1,2),16);
+      const g = parseInt(hex.substr(3,2),16);
+      const b = parseInt(hex.substr(5,2),16);
+      const noteIdx = (r + g + b + idx*13) % baseNotes.length;
+      const octave = 2 + Math.floor(((r + g + b) / 3) / 32); // 2-5
+      return baseNotes[noteIdx] + octave;
+    }
+
+    function loadTone() {
+      return new Promise((resolve, reject) => {
+        if (window.Tone) return resolve();
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js';
+        script.onload = resolve;
+        script.onerror = reject;
+        document.body.appendChild(script);
+      });
+    }
+    tempo.addEventListener('input', () => {
+      tempoValue.textContent = tempo.value;
+    });
+    const feedbackMsg = document.getElementById('feedbackMsg');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    function showFeedback(msg, color = '#e74c3c') {
+      feedbackMsg.textContent = msg;
+      feedbackMsg.style.color = color;
+      feedbackMsg.style.display = 'block';
+      setTimeout(() => { feedbackMsg.style.display = 'none'; }, 3500);
+    }
+    function showLoading(show) {
+      loadingSpinner.style.display = show ? 'block' : 'none';
+    }
+    analyzeBtn.addEventListener('click', async () => {
+      if (!selectedPhoto) return;
+      const formData = new FormData();
+      formData.append('photo', selectedPhoto);
+      // Add music settings
+      formData.append('tempo', tempo.value);
+      formData.append('scale', scale.value);
+      formData.append('instrument', instrument.value);
+      // Reset panels
+      colorsDiv.textContent = '';
+      objectsDiv.textContent = '';
+      musicDiv.textContent = '';
+      resultPanel.style.display = 'none';
+      previewImg.style.display = 'block';
+      document.getElementById('tracksPanelContainer').style.display = 'flex';
+      showLoading(true);
+      try {
+        const res = await fetch('http://localhost:5000/analyze', {
+          method: 'POST',
+          body: formData
+        });
+        showLoading(false);
+        if (!res.ok) {
+          throw new Error('Server error: ' + res.status);
+        }
+        const data = await res.json();
+
+        // Show objects as blocks, 4 per row, stacking below
+        if (Array.isArray(data.objects) && data.objects.length) {
+          let objRows = '';
+          for (let i = 0; i < data.objects.length; i += 4) {
+            objRows += '<div style="display:flex;gap:8px;margin-bottom:6px;">' +
+              data.objects.slice(i, i+4).map(obj => `<span style="display:inline-block;padding:4px 10px;background:#333;border-radius:7px;border:1.5px solid #444;color:#fff;font-size:0.98em;">${obj}</span>`).join('') +
+              '</div>';
+          }
+          objectsDiv.innerHTML = '<span style="color:#aaa;font-weight:bold;">Objects:</span><div style="margin-top:6px;">' + objRows + '</div>';
+        } else {
+          objectsDiv.textContent = 'Objects: N/A';
+        }
+        // Music as JSON (unchanged)
+        musicDiv.textContent = 'Music: ' + (data.music ? JSON.stringify(data.music) : 'N/A');
+        resultPanel.style.display = 'flex';
+        previewImg.style.display = 'block';
+        document.getElementById('tracksPanelContainer').style.display = 'flex';
+        showFeedback('Analysis complete!', '#2ecc40');
+        // Create a new track from the 10 most frequent colors, but only if not already present
+        if (Array.isArray(data.colors) && data.colors.length) {
+          const top10 = data.colors.slice(0, 10);
+          // Prevent duplicate tracks
+          if (!tracks.some(t => JSON.stringify(t) === JSON.stringify(top10))) {
+            beatColors = [...top10];
+            tracks.push([...top10]);
+            showBeatPanel(beatColors);
+          } else {
+            showFeedback('Track already exists for this image!', '#f1c40f');
+          }
+        }
+      } catch (err) {
+        showLoading(false);
+
+        objectsDiv.textContent = '';
+        musicDiv.textContent = '';
+        resultPanel.style.display = 'flex';
+        previewImg.style.display = 'block';
+        document.getElementById('tracksPanelContainer').style.display = 'flex';
+        musicDiv.textContent = 'Error: ' + err.message + '.\nIs the backend running on http://localhost:5000?';
+        showFeedback('Error: ' + err.message);
+      }
+    });
+  </script>
+</body>
+</html>
