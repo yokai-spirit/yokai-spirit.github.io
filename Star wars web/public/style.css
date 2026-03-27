@@ -1,0 +1,164 @@
+/* Modal styles */
+.modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100vw; height: 100vh; overflow: auto; background: rgba(0,0,0,0.7); }
+.modal-content { background: #23272a; margin: 10vh auto; padding: 2rem; border-radius: 8px; width: 90%; max-width: 400px; color: #fff; position: relative; }
+.close { color: #aaa; position: absolute; top: 10px; right: 20px; font-size: 2rem; font-weight: bold; cursor: pointer; }
+.close:hover { color: #fff; }
+body { font-family: Arial, sans-serif; background: #181a1b; color: #fff; margin: 0; padding: 0; }
+h1 { text-align: center; margin: 1.5rem 0; }
+#categories { display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; }
+.category { width: 100%; max-width: 1200px; margin-bottom: 2rem; }
+.category-title { font-size: 1.5rem; margin-bottom: 1rem; border-bottom: 1px solid #444; padding-bottom: 0.5rem; }
+.cards { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+.card { background: #23272a; border-radius: 8px; box-shadow: 0 2px 8px #000a; width: 220px; overflow: hidden; display: flex; flex-direction: column; align-items: center; border: 2px solid #ffe81f; }
+.card-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-bottom: 1px solid #ffe81f;
+  background: #181a1b;
+}
+.card-info { padding: 1rem; text-align: center; }
+.card-info h3 { margin: 0.5rem 0 0.2rem; font-size: 1.1rem; }
+.card-info p { margin: 0.2rem 0; font-size: 0.95rem; color: #ccc; }
+
+/* Favorite button styles */
+.favorite {
+  color: #ffe81f;
+  font-size: 1.3rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  transition: color 0.2s, text-shadow 0.2s;
+}
+.favorite.active {
+  color: #ffe81f;
+  text-shadow: 0 0 8px #ffe81f, 0 0 2px #fff;
+}
+
+/* Light theme */
+body.light { background: #f4f4f4; color: #222; }
+body.light .card { background: #fff; color: #222; }
+body.light .modal-content { background: #fff; color: #222; }
+body.light #toggle-mode { background: #eee; color: #222; }
+body.light .category-title { border-bottom: 1px solid #bbb; }
+body.light .card-info p { color: #444; }
+body.light .favorite { color: #ffb300; }
+body.light .favorite.active { color: #ffe81f; text-shadow: 0 0 8px #ffe81f, 0 0 2px #222; }
+body.light .card {
+  border: 2px solid #ffe81f;
+  box-shadow: 0 2px 8px #ffe81f33;
+}
+
+/* Button, toggle, and favorite styles */
+button, .toggle, .favorite {
+  /* Add a vibrant RGB gradient background */
+  background: linear-gradient(90deg, #00eaff, #00bfff, #00fff7, #00eaff);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-position 0.5s, transform 0.2s, box-shadow 0.2s;
+  background-size: 200% 200%;
+  box-shadow: 0 2px 8px #0004;
+}
+button:hover, .toggle:hover, .favorite:hover {
+  background-position: 100% 0;
+  transform: scale(1.07) rotate(-1deg);
+  box-shadow: 0 4px 16px #00eaff99;
+}
+
+/* Category filter styles */
+#category-filter, #category-filter option, #toggle-mode, .controls select, .controls option {
+  background: linear-gradient(90deg, #00eaff, #00bfff, #00fff7, #00eaff);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-position 0.5s, transform 0.2s, box-shadow 0.2s, color 0.2s;
+  background-size: 200% 200%;
+  box-shadow: 0 2px 8px #0004;
+}
+#category-filter:hover, #toggle-mode:hover, .controls select:hover {
+  background-position: 100% 0;
+  transform: scale(1.07) rotate(-1deg);
+  box-shadow: 0 4px 16px #00eaff99;
+}
+
+/* Search bar styles */
+#search-bar {
+  background: linear-gradient(90deg, #00eaff, #00bfff, #00fff7, #00eaff);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-weight: bold;
+  transition: background-position 0.5s, box-shadow 0.2s, color 0.2s;
+  background-size: 200% 200%;
+  box-shadow: 0 2px 8px #0004;
+}
+#search-bar:focus, #search-bar:hover {
+  background-position: 100% 0;
+  box-shadow: 0 4px 16px #00eaff99;
+  outline: none;
+  color: #fff;
+}
+
+/* Star Wars stylization additions */
+body {
+  font-family: 'Orbitron', 'Arial Black', Arial, sans-serif;
+  letter-spacing: 0.04em;
+}
+h1 {
+  font-family: 'Star Jedi', 'Orbitron', 'Arial Black', Arial, sans-serif;
+  color: #ffe81f;
+  text-shadow: 0 0 12px #ffe81f, 0 0 2px #fff, 0 2px 8px #000a;
+  letter-spacing: 0.12em;
+  font-size: 2.5rem;
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
+}
+.category-title {
+  color: #ffe81f;
+  text-shadow: 0 0 8px #ffe81f, 0 0 2px #fff;
+  font-family: 'Orbitron', 'Arial Black', Arial, sans-serif;
+  letter-spacing: 0.08em;
+}
+.card {
+  font-family: 'Orbitron', Arial, sans-serif;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px #000c, 0 0 0 2px #ffe81f;
+  border: 2px solid #ffe81f;
+  background: linear-gradient(135deg, #23272a 80%, #ffe81f22 100%);
+}
+.card-info h3 {
+  color: #ffe81f;
+  font-family: 'Orbitron', Arial, sans-serif;
+  letter-spacing: 0.06em;
+}
+.card-info p {
+  font-family: 'Orbitron', Arial, sans-serif;
+}
+.modal-content {
+  border: 2px solid #ffe81f;
+  box-shadow: 0 0 24px #ffe81f44;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  background: #181a1b;
+}
+::-webkit-scrollbar-thumb {
+  background: #ffe81f;
+  border-radius: 8px;
+}
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+@font-face {
+  font-family: 'Star Jedi';
+  src: url('https://fonts.cdnfonts.com/s/16250/Starjedi.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}

@@ -1,0 +1,16 @@
+- [x] Clarify Project Requirements
+	- Requirements clarified: Node.js app, fetch Star Wars API, display cards by category, English UI.
+- [x] Scaffold the Project
+	- Node.js project initialized with Express, static frontend folder created.
+- [x] Customize the Project
+	- Frontend and backend code added to fetch and display API data as cards grouped by category.
+- [x] Install Required Extensions
+	- No additional VS Code extensions required for this project.
+- [x] Compile the Project
+	- Dependencies installed with npm, no errors found.
+- [x] Create and Run Task
+	- Task created to start the Node.js server, server running on http://localhost:3000.
+- [x] Launch the Project
+	- Project launched and accessible in browser at http://localhost:3000.
+- [x] Ensure Documentation is Complete
+	- README.md created with setup, usage, and project details. copilot-instructions.md updated.

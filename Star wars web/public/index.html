@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Star Wars Databank</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Star Wars Databank</h1>
+    <div class="controls">
+      <input id="search-bar" type="text" placeholder="Search..." />
+      <select id="category-filter">
+        <option value="all">All Categories</option>
+        <option value="droids">Droids</option>
+        <option value="characters">Characters</option>
+        <option value="planets">Planets</option>
+        <option value="starships">Starships</option>
+        <option value="creatures">Creatures</option>
+      </select>
+      <button id="toggle-mode">🌙</button>
+    </div>
+  </header>
+  <div id="spinner" class="spinner" style="display:none;"></div>
+  <div style="text-align:center; color:#ffe81f; font-weight:bold; margin: 1.5rem 0;">
+    Due to technical issues we're unable to show pictures at all.
+  </div>
+  <div id="categories"></div>
+  <div id="modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span id="close-modal" class="close">&times;</span>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

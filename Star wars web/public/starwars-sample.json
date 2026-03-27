@@ -1,0 +1,57 @@
+{
+  "droids": [
+    { "name": "R2-D2", "image": "http://starwars-visualguide.com/assets/img/characters/3.jpg", "description": "Astromech droid and hero of the Rebellion." },
+    { "name": "C-3PO", "image": "http://starwars-visualguide.com/assets/img/characters/2.jpg", "description": "Protocol droid fluent in over six million forms of communication." },
+    { "name": "BB-8", "image": "http://starwars-visualguide.com/assets/img/characters/87.jpg", "description": "Spherical astromech droid who served Poe Dameron and Rey." },
+    { "name": "K-2SO", "image": "http://starwars-visualguide.com/assets/img/characters/76.jpg", "description": "Reprogrammed Imperial security droid who aided the Rebel Alliance." },
+    { "name": "IG-88", "image": "http://starwars-visualguide.com/assets/img/characters/77.jpg", "description": "Assassin droid and bounty hunter in the galaxy." }
+  ],
+  "characters": [
+    { "name": "Luke Skywalker", "image": "http://starwars-visualguide.com/assets/img/characters/1.jpg", "description": "A legendary Jedi Knight who fought in the Galactic Civil War." },
+    { "name": "Darth Vader", "image": "http://starwars-visualguide.com/assets/img/characters/4.jpg", "description": "Once a heroic Jedi Knight, he was seduced by the dark side of the Force." },
+    { "name": "Leia Organa", "image": "http://starwars-visualguide.com/assets/img/characters/5.jpg", "description": "Princess of Alderaan, leader of the Rebel Alliance." },
+    { "name": "Han Solo", "image": "http://starwars-visualguide.com/assets/img/characters/14.jpg", "description": "Smuggler, scoundrel, and hero of the Rebellion." },
+    { "name": "Obi-Wan Kenobi", "image": "http://starwars-visualguide.com/assets/img/characters/10.jpg", "description": "Jedi Master and mentor to Luke Skywalker." },
+    { "name": "Yoda", "image": "http://starwars-visualguide.com/assets/img/characters/20.jpg", "description": "Legendary Jedi Master, wise and powerful." },
+    { "name": "Emperor Palpatine", "image": "http://starwars-visualguide.com/assets/img/characters/21.jpg", "description": "Dark Lord of the Sith and Emperor of the Galactic Empire." },
+    { "name": "Chewbacca", "image": "http://starwars-visualguide.com/assets/img/characters/13.jpg", "description": "Wookiee warrior and loyal friend to Han Solo." },
+    { "name": "R2-D2", "image": "http://starwars-visualguide.com/assets/img/characters/3.jpg", "description": "Astromech droid and hero of the Rebellion." },
+    { "name": "C-3PO", "image": "http://starwars-visualguide.com/assets/img/characters/2.jpg", "description": "Protocol droid fluent in over six million forms of communication." }
+  ],
+  "planets": [
+    { "name": "Tatooine", "image": "http://starwars-visualguide.com/assets/img/planets/1.jpg", "description": "A desert planet and the childhood home of Luke Skywalker." },
+    { "name": "Alderaan", "image": "http://starwars-visualguide.com/assets/img/planets/2.jpg", "description": "A peaceful planet destroyed by the Death Star." },
+    { "name": "Hoth", "image": "http://starwars-visualguide.com/assets/img/planets/4.jpg", "description": "An icy planet and site of a Rebel base." },
+    { "name": "Endor", "image": "http://starwars-visualguide.com/assets/img/planets/7.jpg", "description": "Forest moon, home to the Ewoks." },
+    { "name": "Naboo", "image": "http://starwars-visualguide.com/assets/img/planets/8.jpg", "description": "Lush planet, home to Padmé Amidala and Emperor Palpatine." },
+    { "name": "Coruscant", "image": "http://starwars-visualguide.com/assets/img/planets/9.jpg", "description": "City-covered capital of the galaxy." },
+    { "name": "Dagobah", "image": "http://starwars-visualguide.com/assets/img/planets/5.jpg", "description": "Swampy planet where Yoda lived in exile." },
+    { "name": "Mustafar", "image": "http://starwars-visualguide.com/assets/img/planets/13.jpg", "description": "Volcanic planet, site of Anakin and Obi-Wan's duel." },
+    { "name": "Jakku", "image": "http://starwars-visualguide.com/assets/img/planets/3.jpg", "description": "Desert planet where Rey grew up." },
+    { "name": "Kamino", "image": "http://starwars-visualguide.com/assets/img/planets/10.jpg", "description": "Ocean planet, home of the cloners." }
+  ],
+  "starships": [
+    { "name": "Millennium Falcon", "image": "http://starwars-visualguide.com/assets/img/starships/10.jpg", "description": "A legendary starship piloted by Han Solo and Chewbacca." },
+    { "name": "X-wing", "image": "http://starwars-visualguide.com/assets/img/starships/12.jpg", "description": "A versatile Rebel Alliance starfighter." },
+    { "name": "TIE Fighter", "image": "http://starwars-visualguide.com/assets/img/starships/13.jpg", "description": "Imperial starfighter with twin ion engines." },
+    { "name": "Star Destroyer", "image": "http://starwars-visualguide.com/assets/img/starships/3.jpg", "description": "Massive Imperial capital ship." },
+    { "name": "Slave I", "image": "http://starwars-visualguide.com/assets/img/starships/21.jpg", "description": "Boba Fett's iconic starship." },
+    { "name": "Imperial Shuttle", "image": "http://starwars-visualguide.com/assets/img/starships/22.jpg", "description": "Transport shuttle used by the Empire." },
+    { "name": "A-wing", "image": "http://starwars-visualguide.com/assets/img/starships/28.jpg", "description": "Fast and agile Rebel starfighter." },
+    { "name": "B-wing", "image": "http://starwars-visualguide.com/assets/img/starships/29.jpg", "description": "Heavy assault starfighter of the Rebellion." },
+    { "name": "Y-wing", "image": "http://starwars-visualguide.com/assets/img/starships/11.jpg", "description": "Bomber used by the Rebel Alliance." },
+    { "name": "Executor", "image": "http://starwars-visualguide.com/assets/img/starships/15.jpg", "description": "Darth Vader's Super Star Destroyer." }
+  ],
+  "creatures": [
+    { "name": "Bantha", "image": "https://static.wikia.nocookie.net/starwars/images/7/7b/Bantha-TBOBF.png", "description": "Large, furry herbivores native to Tatooine." },
+    { "name": "Tauntaun", "image": "https://static.wikia.nocookie.net/starwars/images/6/6b/Tauntaun-TESB.png", "description": "Reptilian creatures used by the Rebels on Hoth." },
+    { "name": "Rancor", "image": "https://static.wikia.nocookie.net/starwars/images/7/7b/Rancor-TBOBF.png", "description": "Massive carnivorous reptile kept by Jabba the Hutt." },
+    { "name": "Wampa", "image": "https://static.wikia.nocookie.net/starwars/images/6/6b/Wampa-TESB.png", "description": "White-furred carnivore native to Hoth." },
+    { "name": "Sarlacc", "image": "https://static.wikia.nocookie.net/starwars/images/6/6e/Sarlacc-Pit.png", "description": "Pit-dwelling creature in the Great Pit of Carkoon." },
+    { "name": "Dewback", "image": "https://static.wikia.nocookie.net/starwars/images/2/2e/Dewback-TBOBF.png", "description": "Large reptilian beast used by stormtroopers on Tatooine." },
+    { "name": "Porg", "image": "https://static.wikia.nocookie.net/starwars/images/7/7e/Porg-TLJ.png", "description": "Small, bird-like creatures from Ahch-To." },
+    { "name": "Ewok", "image": "https://static.wikia.nocookie.net/starwars/images/6/6d/Ewok-TROS.png", "description": "Small, furry bipeds native to Endor." },
+    { "name": "Womp Rat", "image": "https://static.wikia.nocookie.net/starwars/images/2/2e/Womp_Rat-TBOBF.png", "description": "Rodent native to Tatooine." },
+    { "name": "Nexu", "image": "https://static.wikia.nocookie.net/starwars/images/7/7e/Nexu-TCW.png", "description": "Agile predator from the planet Cholganna." }
+  ]
+}
